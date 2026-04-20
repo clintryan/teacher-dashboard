@@ -1,0 +1,1697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>S1 Statistics — Chapter 2: Measures of Location and Spread — Student Copy</title>
+
+  <!-- KaTeX -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {
+      delimiters: [
+        {left: '$$', right: '$$', display: true},
+        {left: '\\(', right: '\\)', display: false}
+      ]
+    });"
+  ></script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,700;1,9..144,300&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ── CSS Custom Properties ─────────────────────────────── */
+    :root {
+      --blue:        #0A5CFF;
+      --blue-dark:   #0847CC;
+      --blue-light:  #E6F0FF;
+      --coral:       #E07A5F;
+      --text:        #2F3B4C;
+      --surface:     #ffffff;
+      --bg:          #FBFBFB;
+      --border:      #E5E7EB;
+      --green:       #16A34A;
+      --green-light: #DCFCE7;
+      --amber:       #D97706;
+      --amber-light: #FEF3C7;
+
+      --font-sans:  'Plus Jakarta Sans', sans-serif;
+      --font-serif: 'Fraunces', serif;
+      --font-mono:  'JetBrains Mono', monospace;
+    }
+
+    /* ── Reset ─────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      width: 100%; height: 100%;
+      overflow: hidden;
+      background: #1a1a2e;
+      font-family: var(--font-sans);
+      color: var(--text);
+    }
+
+    /* ── Student Mode ───────────────────────────────────────── */
+    .student-only { display: block !important; }
+    .teacher-only { display: none !important; }
+
+    /* ── Mode Badge ─────────────────────────────────────────── */
+    #mode-badge {
+      position: fixed;
+      top: 14px; right: 14px;
+      z-index: 1000;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-family: var(--font-sans);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    #mode-badge.student {
+      background: #E07A5F;
+      color: #fff;
+    }
+
+    /* ── Slide Stage ─────────────────────────────────────────── */
+    .slide-stage {
+      position: fixed;
+      top: 50%; left: 50%;
+      width: 1280px; height: 720px;
+      transform-origin: center center;
+      transform: translate(-50%, -50%) scale(var(--stage-scale, 1));
+    }
+
+    /* ── Slides ─────────────────────────────────────────────── */
+    .slide {
+      position: absolute;
+      inset: 0;
+      width: 1280px; height: 720px;
+      background: var(--bg);
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      pointer-events: none;
+    }
+    .slide.active {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: all;
+    }
+
+    /* ── Navigation Bar ─────────────────────────────────────── */
+    #nav-bar {
+      position: fixed;
+      bottom: 18px; left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border);
+      border-radius: 32px;
+      padding: 8px 20px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.18);
+    }
+    #nav-bar button {
+      background: var(--blue);
+      color: #fff;
+      border: none;
+      border-radius: 20px;
+      padding: 7px 18px;
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    #nav-bar button:hover { background: var(--blue-dark); }
+    #slide-counter {
+      font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      min-width: 60px;
+      text-align: center;
+    }
+
+    /* ── Common Slide Utilities ──────────────────────────────── */
+    .slide-inner {
+      width: 100%; height: 100%;
+      padding: 52px 60px 48px;
+      display: flex;
+      flex-direction: column;
+    }
+    .slide-label {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+    }
+    .label-blue  { background: var(--blue-light); color: var(--blue-dark); }
+    .label-green { background: var(--green-light); color: var(--green); }
+    .label-amber { background: var(--amber-light); color: var(--amber); }
+    .label-coral { background: #fdeae5; color: #b05a45; }
+
+    h1.slide-title {
+      font-family: var(--font-serif);
+      font-size: 42px;
+      font-weight: 700;
+      line-height: 1.15;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+    h2.slide-title {
+      font-family: var(--font-serif);
+      font-size: 30px;
+      font-weight: 600;
+      line-height: 1.2;
+      color: var(--text);
+      margin-bottom: 14px;
+    }
+    .slide-subtitle {
+      font-size: 16px;
+      color: #5a6a7a;
+      font-weight: 500;
+    }
+
+    /* Divider */
+    .divider {
+      width: 60px; height: 3px;
+      background: var(--blue);
+      border-radius: 2px;
+      margin: 14px 0 20px;
+    }
+
+    /* Card */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 24px;
+    }
+
+    /* Timer */
+    .timer-display {
+      font-family: var(--font-mono);
+      font-size: 48px;
+      font-weight: 600;
+      color: var(--blue);
+      letter-spacing: 0.05em;
+      text-align: center;
+      margin: 12px 0;
+      transition: color 0.3s;
+    }
+    .timer-display.amber { color: var(--amber); }
+    .timer-display.red   { color: #dc2626; }
+    .timer-btn {
+      background: var(--surface);
+      border: 2px solid var(--blue);
+      border-radius: 8px;
+      padding: 8px 20px;
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--blue);
+      cursor: pointer;
+      margin: 0 6px;
+      transition: all 0.15s;
+    }
+    .timer-btn:hover { background: var(--blue); color: #fff; }
+
+    /* ── Table ─────────────────────────────────────────────── */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    .data-table th {
+      background: var(--blue);
+      color: #fff;
+      padding: 8px 14px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 13px;
+    }
+    .data-table td {
+      padding: 7px 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    .data-table tr:nth-child(even) td { background: #f8f9fb; }
+
+    /* ── Working Space ───────────────────────────────────────── */
+    .working-space {
+      border: 2px dashed #E5E7EB;
+      border-radius: 8px;
+      padding: 12px 16px;
+      min-height: 80px;
+      background: #FAFAFA;
+      margin-top: 14px;
+    }
+    .ws-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #9CA3AF;
+      margin-bottom: 8px;
+    }
+    .ws-lines {
+      min-height: 48px;
+    }
+
+    /* ── Slide-specific layouts ──────────────────────────────── */
+
+    /* S01 – Title */
+    #s01 { background: var(--blue-light); }
+    #s01 .hook-text {
+      font-family: var(--font-serif);
+      font-size: 52px;
+      font-weight: 300;
+      font-style: italic;
+      line-height: 1.2;
+      color: var(--blue-dark);
+      margin: 24px 0 28px;
+    }
+    #s01 .today-sentence {
+      font-size: 20px;
+      font-weight: 500;
+      color: var(--text);
+      padding: 16px 24px;
+      background: rgba(255,255,255,0.7);
+      border-radius: 10px;
+      display: inline-block;
+    }
+    #s01 .course-badge {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--blue-dark);
+      background: rgba(255,255,255,0.85);
+      padding: 6px 16px;
+      border-radius: 16px;
+      display: inline-block;
+      margin-bottom: 8px;
+    }
+    #s01 .bcc-label {
+      font-size: 13px;
+      color: #5a7099;
+      margin-top: 32px;
+    }
+
+    /* S02 – Context */
+    #s02 .dot-plots-row {
+      display: flex;
+      gap: 32px;
+      margin: 18px 0 10px;
+    }
+    #s02 .dot-plot-wrap {
+      flex: 1;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 20px 14px;
+    }
+    #s02 .dot-plot-wrap h3 {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: var(--blue-dark);
+    }
+
+    /* S03 – Vocab 2-col */
+    #s03 .vocab-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 4px;
+    }
+    #s03 .vocab-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 20px;
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 0 16px;
+      align-items: center;
+    }
+    #s03 .vocab-term {
+      font-family: var(--font-serif);
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--blue-dark);
+      line-height: 1.2;
+    }
+    #s03 .vocab-symbol {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--blue);
+      margin-top: 4px;
+      font-weight: 600;
+    }
+    #s03 .vocab-def {
+      font-size: 14px;
+      color: var(--text);
+      line-height: 1.5;
+    }
+    #s03 .vocab-pron {
+      font-size: 12px;
+      color: #8a9ab0;
+      font-style: italic;
+      margin-top: 2px;
+    }
+
+    /* S04 – Discovery */
+    #s04 .datasets-row {
+      display: flex;
+      gap: 18px;
+      margin: 14px 0;
+    }
+    #s04 .dataset-card {
+      flex: 1;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 20px;
+      text-align: center;
+    }
+    #s04 .dataset-label {
+      font-family: var(--font-mono);
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--blue-dark);
+      margin-bottom: 8px;
+    }
+    #s04 .dataset-values {
+      font-family: var(--font-mono);
+      font-size: 18px;
+      color: var(--text);
+      letter-spacing: 0.04em;
+    }
+
+    /* S05 – Socratic */
+    #s05 .questions-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-top: 8px;
+    }
+    #s05 .q-item {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      padding: 14px 18px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+    #s05 .q-num {
+      width: 28px; height: 28px;
+      background: var(--blue);
+      color: #fff;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    #s05 .q-text {
+      font-size: 15px;
+      line-height: 1.55;
+      padding-top: 2px;
+    }
+
+    /* S06 – Worked Example */
+    #s06 .we-layout {
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      gap: 24px;
+      flex: 1;
+    }
+    #s06 .we-problem {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+    }
+    #s06 .we-student-space { display: flex; flex-direction: column; gap: 10px; }
+    #s06 .completion-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      margin-bottom: 10px;
+    }
+    #s06 .completion-table th {
+      background: var(--blue-light);
+      color: var(--blue-dark);
+      padding: 8px 12px;
+      text-align: center;
+      font-weight: 600;
+      font-size: 12px;
+      border: 1px solid #c2d9ff;
+    }
+    #s06 .completion-table td {
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      text-align: center;
+      height: 36px;
+      background: var(--surface);
+    }
+    #s06 .completion-table tr:nth-child(odd) td { background: #f8f9fb; }
+
+    /* S07 – Spot the Error */
+    #s07 .student-working {
+      background: #fffef8;
+      border: 2px solid #f0e68c;
+      border-radius: 12px;
+      padding: 20px 24px;
+      font-family: var(--font-mono);
+      font-size: 13.5px;
+      line-height: 2;
+    }
+    #s07 .error-line {
+      background: #fee2e2;
+      border-radius: 4px;
+      padding: 1px 4px;
+      text-decoration: wavy underline #dc2626;
+    }
+
+    /* S08 – Discourse */
+    #s08 .prompt-box {
+      background: var(--surface);
+      border-left: 5px solid var(--blue);
+      border-radius: 0 12px 12px 0;
+      padding: 22px 28px;
+      font-size: 20px;
+      font-family: var(--font-serif);
+      font-weight: 300;
+      font-style: italic;
+      line-height: 1.5;
+      color: var(--text);
+      margin: 14px 0 18px;
+    }
+    #s08 .starters-row {
+      display: flex;
+      gap: 12px;
+    }
+    #s08 .starter-chip {
+      background: var(--blue-light);
+      border: 1px solid #c2d9ff;
+      border-radius: 8px;
+      padding: 9px 14px;
+      font-size: 13px;
+      color: var(--blue-dark);
+      font-style: italic;
+    }
+
+    /* S09 – Quiz */
+    #s09 .quiz-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 8px;
+    }
+    #s09 .quiz-item {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 16px;
+    }
+    #s09 .quiz-num {
+      font-weight: 700; color: var(--blue); font-size: 14px;
+      min-width: 22px;
+    }
+    #s09 .quiz-q { font-size: 14px; flex: 1; line-height: 1.45; }
+    #s09 .quiz-ws {
+      font-size: 11px;
+      color: #9CA3AF;
+      font-family: var(--font-mono);
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border-top: 1px dashed #E5E7EB;
+      margin-top: 6px;
+      padding-top: 4px;
+    }
+
+    /* S10 – Matching */
+    #s10 .match-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      flex: 1;
+    }
+    #s10 .match-col-label {
+      font-size: 12px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.08em; color: #8a9ab0; margin-bottom: 10px;
+    }
+    #s10 .match-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 16px;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+    #s10 .match-letter {
+      display: inline-block;
+      width: 24px; height: 24px;
+      background: var(--blue-light);
+      color: var(--blue-dark);
+      border-radius: 4px;
+      text-align: center; line-height: 24px;
+      font-weight: 700; font-size: 12px;
+      margin-right: 10px;
+    }
+
+    /* S11 – Widget */
+    #s11 .widget-area {
+      background: var(--surface);
+      border: 2px dashed var(--border);
+      border-radius: 16px;
+      display: flex; align-items: center; justify-content: center;
+      color: #b0bbc8;
+      font-size: 14px;
+      font-style: italic;
+    }
+    #s11 .interp-questions {
+      display: flex;
+      gap: 16px;
+      margin-top: 14px;
+    }
+    #s11 .interp-q {
+      flex: 1;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 16px;
+      font-size: 14px;
+      line-height: 1.55;
+    }
+    #s11 .interp-q .q-label {
+      font-weight: 700; color: var(--blue); font-size: 12px;
+      text-transform: uppercase; letter-spacing: 0.06em;
+      margin-bottom: 4px;
+    }
+
+    /* S12 – Summary */
+    #s12 .summary-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      flex: 1;
+    }
+    #s12 .formula-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 22px;
+    }
+    #s12 .formula-box h3 {
+      font-size: 13px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--blue); margin-bottom: 14px;
+    }
+    #s12 .formula-row {
+      padding: 7px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    #s12 .formula-row:last-child { border-bottom: none; }
+    #s12 .pitfall-box {
+      background: var(--amber-light);
+      border: 1px solid #fcd34d;
+      border-radius: 12px;
+      padding: 18px 20px;
+    }
+    #s12 .pitfall-box h3 {
+      font-size: 13px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--amber); margin-bottom: 12px;
+    }
+    #s12 .pitfall-item {
+      display: flex; gap: 8px; margin-bottom: 9px;
+      font-size: 14px; line-height: 1.45;
+    }
+    #s12 .pitfall-item::before {
+      content: "⚠"; flex-shrink: 0; color: var(--amber);
+    }
+    #s12 .exam-link {
+      background: var(--blue-light);
+      border: 1px solid #c2d9ff;
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 13px;
+      color: var(--blue-dark);
+      margin-top: 12px;
+      grid-column: 1 / -1;
+    }
+
+    /* S13 – Challenge */
+    #s13 { background: #f5f3ff; }
+    #s13 .ext-badge {
+      display: inline-block;
+      background: #7c3aed;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      padding: 5px 14px;
+      border-radius: 12px;
+      margin-bottom: 14px;
+    }
+    #s13 .problem-box {
+      background: var(--surface);
+      border: 2px solid #7c3aed;
+      border-radius: 14px;
+      padding: 24px 30px;
+      font-size: 17px;
+      line-height: 1.6;
+    }
+    #s13 .hint-box {
+      background: #ede9fe;
+      border: 1px solid #c4b5fd;
+      border-radius: 10px;
+      padding: 14px 18px;
+      font-size: 14px;
+      color: #4c1d95;
+      margin-top: 14px;
+      display: none;
+    }
+    #s13 .hint-box.show { display: block; }
+    #s13 .hint-btn {
+      background: transparent;
+      border: 2px solid #7c3aed;
+      color: #7c3aed;
+      border-radius: 8px;
+      padding: 8px 20px;
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 14px;
+      transition: all 0.15s;
+    }
+    #s13 .hint-btn:hover { background: #7c3aed; color: #fff; }
+
+    /* S14 – Whiteboard */
+    #s14 { background: var(--green-light); }
+    #s14 .wb-center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      text-align: center;
+    }
+    #s14 .wb-task {
+      font-family: var(--font-serif);
+      font-size: 28px;
+      font-weight: 600;
+      color: #14532d;
+      max-width: 700px;
+      line-height: 1.4;
+      margin-bottom: 18px;
+    }
+    #s14 .wb-materials {
+      font-size: 18px;
+      color: #166534;
+      margin-bottom: 26px;
+      letter-spacing: 0.02em;
+    }
+
+    /* S15 – Retrieval */
+    #s15 .retrieval-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 6px;
+    }
+    #s15 .retrieval-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 18px;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+    #s15 .time-badge {
+      flex-shrink: 0;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 4px 10px;
+      border-radius: 8px;
+      white-space: nowrap;
+    }
+    #s15 .badge-lesson { background: var(--blue-light); color: var(--blue-dark); }
+    #s15 .badge-week   { background: var(--green-light); color: var(--green); }
+    #s15 .badge-month  { background: var(--amber-light); color: var(--amber); }
+    #s15 .ret-q { font-size: 14px; line-height: 1.5; flex: 1; }
+    #s15 .ret-ws {
+      font-size: 11px;
+      color: #9CA3AF;
+      font-family: var(--font-mono);
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border-top: 1px dashed #E5E7EB;
+      margin-top: 6px;
+      padding-top: 4px;
+    }
+
+    /* S16 – Bridge */
+    #s16 .bridge-layout {
+      display: flex;
+      gap: 0;
+      flex: 1;
+      margin-top: 10px;
+    }
+    #s16 .bridge-panel {
+      flex: 1;
+      padding: 24px 28px;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    #s16 .bridge-panel.left  { background: var(--blue-light); }
+    #s16 .bridge-panel.right { background: var(--green-light); }
+    #s16 .bridge-panel h3 {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 4px;
+    }
+    #s16 .bridge-panel.left  h3 { color: var(--blue-dark); }
+    #s16 .bridge-panel.right h3 { color: var(--green); }
+    #s16 .bridge-fact {
+      font-size: 14px;
+      line-height: 1.55;
+      padding: 8px 12px;
+      border-radius: 8px;
+    }
+    #s16 .bridge-panel.left  .bridge-fact { background: rgba(255,255,255,0.6); }
+    #s16 .bridge-panel.right .bridge-fact { background: rgba(255,255,255,0.6); }
+    #s16 .bridge-arrow {
+      width: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    #s16 .arrow-icon {
+      font-size: 32px;
+      color: var(--text);
+      opacity: 0.5;
+    }
+    #s16 .bridge-q {
+      background: var(--surface);
+      border: 2px solid var(--blue);
+      border-radius: 12px;
+      padding: 14px 20px;
+      text-align: center;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      margin-top: 14px;
+    }
+  </style>
+</head>
+<body>
+
+<div id="mode-badge" class="student">STUDENT</div>
+
+<div class="slide-stage" id="stage">
+
+  <!-- ═══════════════════════════════════════════════════════
+       SLIDE 01 — Title / Lesson Hook
+  ═══════════════════════════════════════════════════════ -->
+  <div class="slide active" id="s01">
+    <div class="slide-inner">
+      <div class="course-badge">A-Level Statistics 1 · Bangkok Christian College</div>
+      <span class="slide-label label-blue">Chapter 2</span>
+      <h1 class="slide-title">Measures of Location<br>and Spread</h1>
+
+      <p class="hook-text">"Can a single number really describe<br>a whole dataset?"</p>
+
+      <p class="today-sentence">Today: mean, median, mode — and why each one lies.</p>
+
+      <p class="bcc-label" style="margin-top:auto">Bangkok Christian College · S1 Statistics · 2025–26</p>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       SLIDE 02 — Real-World Context / Motivation
+  ═══════════════════════════════════════════════════════ -->
+  <div class="slide" id="s02">
+    <div class="slide-inner">
+      <span class="slide-label label-blue">Motivation</span>
+      <h2 class="slide-title">Why Does Standard Deviation Matter?</h2>
+      <div class="divider"></div>
+
+      <p style="font-size:15px; color:#5a6a7a; margin-bottom:4px;">Two companies. Same average salary of <strong style="color:var(--blue)">฿45,000/month</strong>. Which would you rather work for?</p>
+
+      <div class="dot-plots-row" id="s02-plots">
+        <!-- Dataset A -->
+        <div class="dot-plot-wrap">
+          <h3>Company A — Wide Spread</h3>
+          <svg width="100%" height="120" viewBox="0 0 400 120">
+            <!-- axis -->
+            <line x1="10" y1="100" x2="390" y2="100" stroke="#ccc" stroke-width="1.5"/>
+            <!-- mean marker -->
+            <line x1="200" y1="30" x2="200" y2="100" stroke="#0A5CFF" stroke-width="2" stroke-dasharray="4,3"/>
+            <text x="200" y="24" text-anchor="middle" font-size="11" fill="#0A5CFF" font-family="Plus Jakarta Sans">mean</text>
+            <!-- dots spread wide -->
+            <circle cx="20"  cy="88" r="7" fill="#0A5CFF" opacity="0.6"/>
+            <circle cx="50"  cy="88" r="7" fill="#0A5CFF" opacity="0.6"/>
+            <circle cx="80"  cy="88" r="7" fill="#0A5CFF" opacity="0.6"/>
+            <circle cx="120" cy="88" r="7" fill="#0A5CFF" opacity="0.6"/>
+            <circle cx="160" cy="88" r="7" fill="#0A5CFF" opacity="0.6"/>
+            <circle cx="200" cy="88" r="7" fill="#0A5CFF" opacity="0.85"/>
+            <circle cx="240" cy="88" r="7" fill="#0A5CFF" opacity="0.6"/>
+            <circle cx="280" cy="88" r="7" fill="#0A5CFF" opacity="0.6"/>
+            <circle cx="320" cy="88" r="7" fill="#0A5CFF" opacity="0.6"/>
+            <circle cx="360" cy="88" r="7" fill="#0A5CFF" opacity="0.6"/>
+            <circle cx="380" cy="88" r="7" fill="#0A5CFF" opacity="0.6"/>
+            <!-- axis labels -->
+            <text x="10"  y="114" font-size="10" fill="#8a9ab0" font-family="Plus Jakarta Sans">฿10k</text>
+            <text x="170" y="114" font-size="10" fill="#8a9ab0" font-family="Plus Jakarta Sans">฿45k</text>
+            <text x="358" y="114" font-size="10" fill="#8a9ab0" font-family="Plus Jakarta Sans">฿80k</text>
+          </svg>
+          <p style="font-size:12px; color:#8a9ab0;">σ ≈ ฿22,000 — Salaries range from ฿10k to ฿80k</p>
+        </div>
+
+        <!-- Dataset B -->
+        <div class="dot-plot-wrap">
+          <h3>Company B — Tight Cluster</h3>
+          <svg width="100%" height="120" viewBox="0 0 400 120">
+            <line x1="10" y1="100" x2="390" y2="100" stroke="#ccc" stroke-width="1.5"/>
+            <line x1="200" y1="30" x2="200" y2="100" stroke="#0A5CFF" stroke-width="2" stroke-dasharray="4,3"/>
+            <text x="200" y="24" text-anchor="middle" font-size="11" fill="#0A5CFF" font-family="Plus Jakarta Sans">mean</text>
+            <!-- dots clustered in the middle -->
+            <circle cx="168" cy="88" r="7" fill="#16A34A" opacity="0.6"/>
+            <circle cx="180" cy="88" r="7" fill="#16A34A" opacity="0.7"/>
+            <circle cx="190" cy="76" r="7" fill="#16A34A" opacity="0.7"/>
+            <circle cx="200" cy="64" r="7" fill="#16A34A" opacity="0.85"/>
+            <circle cx="200" cy="88" r="7" fill="#16A34A" opacity="0.85"/>
+            <circle cx="210" cy="76" r="7" fill="#16A34A" opacity="0.7"/>
+            <circle cx="220" cy="88" r="7" fill="#16A34A" opacity="0.7"/>
+            <circle cx="232" cy="88" r="7" fill="#16A34A" opacity="0.6"/>
+            <circle cx="192" cy="52" r="7" fill="#16A34A" opacity="0.5"/>
+            <circle cx="208" cy="52" r="7" fill="#16A34A" opacity="0.5"/>
+            <circle cx="200" cy="40" r="7" fill="#16A34A" opacity="0.4"/>
+            <text x="170" y="114" font-size="10" fill="#8a9ab0" font-family="Plus Jakarta Sans">฿45k</text>
+          </svg>
+          <p style="font-size:12px; color:#8a9ab0;">σ ≈ ฿3,000 — Nearly everyone earns close to ฿45k</p>
+        </div>
+      </div>
+
+      <div style="background:var(--blue-light); border-radius:10px; padding:14px 20px; font-size:16px; font-weight:500; color:var(--blue-dark);">
+        "Both groups earn the same on average. Are they equally well-off?"
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       SLIDE 03 — Vocabulary / Notation
+  ═══════════════════════════════════════════════════════ -->
+  <div class="slide" id="s03">
+    <div class="slide-inner">
+      <span class="slide-label label-blue">Vocabulary &amp; Notation</span>
+      <h2 class="slide-title">Key Terms — Chapter 2</h2>
+      <div class="divider"></div>
+
+      <div class="vocab-grid">
+        <!-- Mean -->
+        <div class="vocab-card">
+          <div>
+            <div class="vocab-term">Mean</div>
+            <div class="vocab-symbol">\(\bar{x}\) &nbsp;"x-bar"</div>
+            <div class="vocab-pron">Pronunciation: "x bar"</div>
+          </div>
+          <div>
+            <div class="vocab-def">The sum of all values divided by the total frequency. The arithmetic average. Can be affected by extreme values (outliers).</div>
+          </div>
+        </div>
+        <!-- Median -->
+        <div class="vocab-card">
+          <div>
+            <div class="vocab-term">Median</div>
+            <div class="vocab-symbol">\(Q_2\) or \(\tilde{x}\)</div>
+            <div class="vocab-pron">Pronunciation: "mee-dee-an"</div>
+          </div>
+          <div>
+            <div class="vocab-def">The middle value when data is ordered. Splits the distribution 50/50. Resistant to outliers — a better measure for skewed data.</div>
+          </div>
+        </div>
+        <!-- Variance -->
+        <div class="vocab-card">
+          <div>
+            <div class="vocab-term">Variance</div>
+            <div class="vocab-symbol">\(\sigma^2\) &nbsp;"sigma squared"</div>
+            <div class="vocab-pron">Pronunciation: "sig-ma"</div>
+          </div>
+          <div>
+            <div class="vocab-def">The mean squared deviation from the mean: \(\sigma^2 = \frac{\Sigma fx^2}{\Sigma f} - \bar{x}^2\). Measures spread in squared units.</div>
+          </div>
+        </div>
+        <!-- Standard Deviation -->
+        <div class="vocab-card">
+          <div>
+            <div class="vocab-term">Std Dev</div>
+            <div class="vocab-symbol">\(\sigma\) &nbsp;"sigma"</div>
+            <div class="vocab-pron">Pronunciation: "sig-ma"</div>
+          </div>
+          <div>
+            <div class="vocab-def">The square root of variance: \(\sigma = \sqrt{\sigma^2}\). Returns to the original units of measurement. Most commonly quoted measure of spread.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       SLIDE 04 — Discovery / Investigation
+  ═══════════════════════════════════════════════════════ -->
+  <div class="slide" id="s04">
+    <div class="slide-inner">
+      <span class="slide-label label-green">Discovery</span>
+      <h2 class="slide-title">What IS Standard Deviation?</h2>
+      <div class="divider"></div>
+
+      <p style="font-size:15px; margin-bottom:10px;">Look at these three datasets. Each has 5 values.</p>
+
+      <div class="datasets-row">
+        <div class="dataset-card">
+          <div class="dataset-label">Dataset A</div>
+          <div class="dataset-values">{2, 4, 6, 8, 10}</div>
+          <p style="font-size:12px; color:#8a9ab0; margin-top:8px;">mean = 6</p>
+        </div>
+        <div class="dataset-card">
+          <div class="dataset-label">Dataset B</div>
+          <div class="dataset-values">{5, 5, 6, 5, 5}</div>
+          <p style="font-size:12px; color:#8a9ab0; margin-top:8px;">mean = 5.2</p>
+        </div>
+        <div class="dataset-card">
+          <div class="dataset-label">Dataset C</div>
+          <div class="dataset-values">{1, 3, 6, 9, 11}</div>
+          <p style="font-size:12px; color:#8a9ab0; margin-top:8px;">mean = 6</p>
+        </div>
+      </div>
+
+      <div style="background:var(--blue-light); border-radius:10px; padding:14px 20px; margin:14px 0; font-size:16px; font-weight:600; color:var(--blue-dark);">
+        Without calculating, rank these from <em>least</em> to <em>most</em> spread. How did you decide?
+      </div>
+
+      <div class="working-space student-only">
+        <div class="ws-label">Your Working Space — Rank the datasets and explain your reasoning</div>
+        <div class="ws-lines"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       SLIDE 05 — Socratic Questioning
+  ═══════════════════════════════════════════════════════ -->
+  <div class="slide" id="s05">
+    <div class="slide-inner">
+      <span class="slide-label label-blue">Socratic Questions</span>
+      <h2 class="slide-title">Conditional Probability — Think It Through</h2>
+      <div class="divider"></div>
+
+      <p style="font-size:14px; color:#5a6a7a; margin-bottom:12px;">A bag contains <strong>3 red</strong> and <strong>2 blue</strong> balls. Answer each question before moving on.</p>
+
+      <div class="questions-list">
+        <div class="q-item">
+          <div class="q-num">1</div>
+          <div class="q-text">You draw one ball. What is \(P(\text{Red})\)?</div>
+        </div>
+        <div class="q-item">
+          <div class="q-num">2</div>
+          <div class="q-text">You <strong>keep</strong> the first ball (it was red). What is \(P(\text{Red})\) on the second draw?</div>
+        </div>
+        <div class="q-item">
+          <div class="q-num">3</div>
+          <div class="q-text">Instead, you <strong>replace</strong> the first ball before drawing again. What is \(P(\text{Red})\) on the second draw?</div>
+        </div>
+        <div class="q-item">
+          <div class="q-num">4</div>
+          <div class="q-text">Why does the calculation <em>change</em> between questions 2 and 3?</div>
+        </div>
+      </div>
+
+      <div class="working-space student-only">
+        <div class="ws-label">Your Answers</div>
+        <div class="ws-lines"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       SLIDE 06 — Worked Example (Student Completion)
+  ═══════════════════════════════════════════════════════ -->
+  <div class="slide" id="s06">
+    <div class="slide-inner" style="padding-bottom:36px;">
+      <span class="slide-label label-blue">Worked Example</span>
+      <h2 class="slide-title">Mean &amp; Standard Deviation from a Frequency Table</h2>
+
+      <div class="we-layout">
+        <!-- Problem statement -->
+        <div class="we-problem">
+          <p style="font-size:13px; color:#5a6a7a; margin-bottom:10px; font-weight:600;">PROBLEM</p>
+          <p style="font-size:13.5px; line-height:1.6; margin-bottom:12px;">Times (minutes) taken by 20 students to complete a puzzle:</p>
+          <table class="data-table" style="font-size:13px;">
+            <thead>
+              <tr><th>Time \(t\) (min)</th><th>Frequency \(f\)</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>\(5 \le t < 10\)</td><td>3</td></tr>
+              <tr><td>\(10 \le t < 15\)</td><td>8</td></tr>
+              <tr><td>\(15 \le t < 20\)</td><td>6</td></tr>
+              <tr><td>\(20 \le t < 25\)</td><td>3</td></tr>
+            </tbody>
+          </table>
+          <p style="font-size:13px; margin-top:12px; font-weight:600;">Find: (a) the mean &nbsp; (b) the standard deviation</p>
+        </div>
+
+        <!-- Student completion space -->
+        <div class="we-student-space">
+          <p style="font-size:12px; color:#8a9ab0; text-transform:uppercase; letter-spacing:0.06em; font-weight:700; margin-bottom:8px;">Your completion table — fill in each column</p>
+
+          <table class="completion-table">
+            <thead>
+              <tr>
+                <th>t interval</th>
+                <th>midpoint (x)</th>
+                <th>f</th>
+                <th>fx</th>
+                <th>fx²</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>\(5 \le t < 10\)</td>
+                <td></td>
+                <td>3</td>
+                <td></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>\(10 \le t < 15\)</td>
+                <td></td>
+                <td>8</td>
+                <td></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>\(15 \le t < 20\)</td>
+                <td></td>
+                <td>6</td>
+                <td></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>\(20 \le t < 25\)</td>
+                <td></td>
+                <td>3</td>
+                <td></td>
+                <td></td>
+              </tr>
+              <tr style="font-weight:700; background:#f0f4ff !important;">
+                <td><strong>Totals</strong></td>
+                <td>—</td>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="working-space" style="margin-top:8px;">
+            <div class="ws-label">Show your calculation of x̄ and σ</div>
+            <div class="ws-lines"></div>
+          </div>
+
+          <p style="font-size:13px; color:#9CA3AF; font-style:italic; margin-top:8px;">Work through this example. Your teacher will reveal each step.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       SLIDE 07 — Spot the Error
+  ═══════════════════════════════════════════════════════ -->
+  <div class="slide" id="s07">
+    <div class="slide-inner">
+      <span class="slide-label label-coral">Spot the Error</span>
+      <h2 class="slide-title">Find and Fix the Mistake</h2>
+      <div class="divider"></div>
+
+      <p style="font-size:15px; margin-bottom:12px;">A student attempted to find the mean from the same frequency table. <strong>Find the error and correct it.</strong></p>
+
+      <div class="student-working">
+        <p><span class="error-line"><strong>Line 1:</strong> &nbsp;\(\bar{x} = \dfrac{3 + 8 + 6 + 3}{4} = \dfrac{20}{4} = 5\)</span></p>
+        <p><strong>Line 2:</strong> &nbsp;Midpoints: 7.5, 12.5, 17.5, 22.5</p>
+        <p><strong>Line 3:</strong> &nbsp;\(\Sigma fx = 3(7.5) + 8(12.5) + 6(17.5) + 3(22.5) = 295\)</p>
+        <p><strong>Line 4:</strong> &nbsp;\(\Sigma fx^2 = 3(56.25) + 8(156.25) + 6(306.25) + 3(506.25) = 4775\)</p>
+        <p><strong>Line 5:</strong> &nbsp;\(\sigma^2 = \dfrac{4775}{20} - 5^2 = 238.75 - 25 = 213.75\)</p>
+        <p><strong>Line 6:</strong> &nbsp;\(\sigma = \sqrt{213.75} \approx 14.62\) &nbsp;✗</p>
+      </div>
+
+      <p style="font-size:14px; margin-top:12px; color:#5a6a7a;">Where is the error? What should lines 1 and 5 say?</p>
+
+      <div class="working-space student-only">
+        <div class="ws-label">Find the error(s). Write your correction below.</div>
+        <div class="ws-lines"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       SLIDE 08 — Discourse Prompt / Pair Discussion
+  ═══════════════════════════════════════════════════════ -->
+  <div class="slide" id="s08">
+    <div class="slide-inner">
+      <span class="slide-label label-blue">Pair Discussion</span>
+      <h2 class="slide-title">Correlation vs Causation</h2>
+      <div class="divider"></div>
+
+      <div class="prompt-box">
+        "Research shows that countries with more TV sets per household have <em>higher life expectancy</em>. Does owning a TV make you live longer?"
+      </div>
+
+      <div class="starters-row">
+        <div class="starter-chip">"I think this is/isn't causation because..."</div>
+        <div class="starter-chip">"A confounding variable might be..."</div>
+        <div class="starter-chip">"A counter-example would be..."</div>
+      </div>
+
+      <div style="display:flex; align-items:center; justify-content:center; gap:24px; margin-top:20px;">
+        <div>
+          <div class="timer-display" id="timer08">3:00</div>
+          <div style="text-align:center; margin-top:6px;">
+            <button class="timer-btn" onclick="startTimer('timer08',180)">Start</button>
+            <button class="timer-btn" onclick="resetTimer('timer08',180)">Reset</button>
+          </div>
+        </div>
+        <div style="max-width:380px;">
+          <p style="font-size:13px; color:#5a6a7a; line-height:1.7;">
+            Discuss with your partner for 3 minutes.<br>
+            Be ready to share one idea with the class.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       SLIDE 09 — Mini-Quiz / Poll (Retrieval Starter)
+  ═══════════════════════════════════════════════════════ -->
+  <div class="slide" id="s09">
+    <div class="slide-inner">
+      <span class="slide-label label-amber">Do Now — Retrieval</span>
+      <h2 class="slide-title">5 Questions · 5 Minutes</h2>
+
+      <div style="display:flex; gap:24px; flex:1;">
+        <div style="flex:1;">
+          <div class="quiz-list">
+            <div class="quiz-item">
+              <div class="quiz-num">1</div>
+              <div class="quiz-q">
+                What is the median of \(\{3, 7, 2, 9, 1, 8\}\)?
+                <div class="quiz-ws">Your answer: ____________________________</div>
+              </div>
+            </div>
+            <div class="quiz-item">
+              <div class="quiz-num">2</div>
+              <div class="quiz-q">
+                Data is coded as \(y = \tfrac{x-20}{5}\). If \(\bar{y} = 3\), find \(\bar{x}\).
+                <div class="quiz-ws">Your answer: ____________________________</div>
+              </div>
+            </div>
+            <div class="quiz-item">
+              <div class="quiz-num">3</div>
+              <div class="quiz-q">
+                A box plot shows \(Q_1 = 12\), \(Q_3 = 20\). Calculate the IQR.
+                <div class="quiz-ws">Your answer: ____________________________</div>
+              </div>
+            </div>
+            <div class="quiz-item">
+              <div class="quiz-num">4</div>
+              <div class="quiz-q">
+                What defines an outlier? Give the formula for upper and lower fences.
+                <div class="quiz-ws">Your answer: ____________________________</div>
+              </div>
+            </div>
+            <div class="quiz-item">
+              <div class="quiz-num">5</div>
+              <div class="quiz-q">
+                The mean of 8 values is 14. One value (= 6) is removed. Find the new mean.
+                <div class="quiz-ws">Your answer: ____________________________</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-width:160px; gap:12px;">
+          <div class="timer-display" id="timer09">5:00</div>
+          <button class="timer-btn" onclick="startTimer('timer09',300)">Start</button>
+          <button class="timer-btn" onclick="resetTimer('timer09',300)">Reset</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       SLIDE 10 — Matching / Sorting Activity
+  ═══════════════════════════════════════════════════════ -->
+  <div class="slide" id="s10">
+    <div class="slide-inner">
+      <span class="slide-label label-blue">Matching Activity</span>
+      <h2 class="slide-title">Match: Distribution Descriptions → Box Plots</h2>
+      <div class="divider"></div>
+
+      <p style="font-size:14px; margin-bottom:14px; color:#5a6a7a;">Match each description (left) to the correct box plot (right). Write letters A–D.</p>
+
+      <div class="match-layout">
+        <!-- Left: descriptions -->
+        <div>
+          <div class="match-col-label">Descriptions</div>
+          <div class="match-card">
+            <strong>1.</strong> Positively Skewed — most data bunched at the low end, long tail to the right.
+          </div>
+          <div class="match-card">
+            <strong>2.</strong> Negatively Skewed — most data bunched at the high end, long tail to the left.
+          </div>
+          <div class="match-card">
+            <strong>3.</strong> Symmetric — median in the centre, whiskers roughly equal length.
+          </div>
+          <div class="match-card">
+            <strong>4.</strong> Uniform — values spread evenly across the range, IQR ≈ half the total range.
+          </div>
+        </div>
+
+        <!-- Right: SVG box plots -->
+        <div>
+          <div class="match-col-label">Box Plots</div>
+          <!-- Box plot A: positively skewed -->
+          <div class="match-card">
+            <span class="match-letter">A</span>
+            <svg width="220" height="36" viewBox="0 0 220 36">
+              <line x1="10" y1="18" x2="50" y2="18" stroke="#2F3B4C" stroke-width="1.5"/>
+              <rect x="50" y="8" width="40" height="20" fill="none" stroke="#0A5CFF" stroke-width="2"/>
+              <line x1="60" y1="8" x2="60" y2="28" stroke="#0A5CFF" stroke-width="2.5"/>
+              <line x1="90" y1="18" x2="210" y2="18" stroke="#2F3B4C" stroke-width="1.5"/>
+              <line x1="10" y1="12" x2="10" y2="24" stroke="#2F3B4C" stroke-width="1.5"/>
+              <line x1="210" y1="12" x2="210" y2="24" stroke="#2F3B4C" stroke-width="1.5"/>
+            </svg>
+          </div>
+          <!-- Box plot B: negatively skewed -->
+          <div class="match-card">
+            <span class="match-letter">B</span>
+            <svg width="220" height="36" viewBox="0 0 220 36">
+              <line x1="10" y1="18" x2="130" y2="18" stroke="#2F3B4C" stroke-width="1.5"/>
+              <rect x="130" y="8" width="50" height="20" fill="none" stroke="#0A5CFF" stroke-width="2"/>
+              <line x1="168" y1="8" x2="168" y2="28" stroke="#0A5CFF" stroke-width="2.5"/>
+              <line x1="180" y1="18" x2="210" y2="18" stroke="#2F3B4C" stroke-width="1.5"/>
+              <line x1="10" y1="12" x2="10" y2="24" stroke="#2F3B4C" stroke-width="1.5"/>
+              <line x1="210" y1="12" x2="210" y2="24" stroke="#2F3B4C" stroke-width="1.5"/>
+            </svg>
+          </div>
+          <!-- Box plot C: symmetric -->
+          <div class="match-card">
+            <span class="match-letter">C</span>
+            <svg width="220" height="36" viewBox="0 0 220 36">
+              <line x1="10" y1="18" x2="75" y2="18" stroke="#2F3B4C" stroke-width="1.5"/>
+              <rect x="75" y="8" width="70" height="20" fill="none" stroke="#0A5CFF" stroke-width="2"/>
+              <line x1="110" y1="8" x2="110" y2="28" stroke="#0A5CFF" stroke-width="2.5"/>
+              <line x1="145" y1="18" x2="210" y2="18" stroke="#2F3B4C" stroke-width="1.5"/>
+              <line x1="10" y1="12" x2="10" y2="24" stroke="#2F3B4C" stroke-width="1.5"/>
+              <line x1="210" y1="12" x2="210" y2="24" stroke="#2F3B4C" stroke-width="1.5"/>
+            </svg>
+          </div>
+          <!-- Box plot D: uniform (wide IQR) -->
+          <div class="match-card">
+            <span class="match-letter">D</span>
+            <svg width="220" height="36" viewBox="0 0 220 36">
+              <line x1="10" y1="18" x2="40" y2="18" stroke="#2F3B4C" stroke-width="1.5"/>
+              <rect x="40" y="8" width="140" height="20" fill="none" stroke="#0A5CFF" stroke-width="2"/>
+              <line x1="110" y1="8" x2="110" y2="28" stroke="#0A5CFF" stroke-width="2.5"/>
+              <line x1="180" y1="18" x2="210" y2="18" stroke="#2F3B4C" stroke-width="1.5"/>
+              <line x1="10" y1="12" x2="10" y2="24" stroke="#2F3B4C" stroke-width="1.5"/>
+              <line x1="210" y1="12" x2="210" y2="24" stroke="#2F3B4C" stroke-width="1.5"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="working-space student-only" style="margin-top:10px;">
+        <div class="ws-label">Your answers — write 1→_, 2→_, 3→_, 4→_ and explain your reasoning</div>
+        <div class="ws-lines"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       SLIDE 11 — Visual / Widget (Normal Distribution)
+  ═══════════════════════════════════════════════════════ -->
+  <div class="slide" id="s11">
+    <div class="slide-inner">
+      <span class="slide-label label-blue">Interactive Widget</span>
+      <h2 class="slide-title">Exploring the Normal Distribution</h2>
+      <div class="divider"></div>
+
+      <!-- Widget placeholder -->
+      <div id="widget-normal" data-widget="normal-dist" class="widget-area" style="width:100%; height:280px;">
+        <div style="text-align:center;">
+          <p style="font-size:15px; font-weight:600; color:#8a9ab0; margin-bottom:6px;">Normal Distribution Widget</p>
+          <p style="font-size:13px; color:#b0bbc8;">Loaded from <code style="font-family:var(--font-mono)">widgets.js</code> — adjust μ and σ to explore the curve</p>
+        </div>
+      </div>
+
+      <div class="interp-questions">
+        <div class="interp-q">
+          <div class="q-label">Question 1</div>
+          What happens to the normal curve as \(\sigma\) increases? Describe in terms of height and width.
+        </div>
+        <div class="interp-q">
+          <div class="q-label">Question 2</div>
+          If \(\mu = 0\) and \(\sigma = 1\), what is \(P(X &lt; 0)\)? Why?
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       SLIDE 12 — Summary / Key Takeaways
+  ═══════════════════════════════════════════════════════ -->
+  <div class="slide" id="s12">
+    <div class="slide-inner">
+      <span class="slide-label label-green">Chapter Summary</span>
+      <h2 class="slide-title">Key Formulas — Chapter 2</h2>
+
+      <div class="summary-layout">
+        <!-- Formulas box -->
+        <div class="formula-box">
+          <h3>Core Formulas</h3>
+          <div class="formula-row">
+            <span style="min-width:20px; font-weight:700; color:var(--blue)">1</span>
+            \(\bar{x} = \dfrac{\Sigma fx}{\Sigma f}\)
+          </div>
+          <div class="formula-row">
+            <span style="min-width:20px; font-weight:700; color:var(--blue)">2</span>
+            \(\sigma^2 = \dfrac{\Sigma fx^2}{\Sigma f} - \bar{x}^2\)
+          </div>
+          <div class="formula-row">
+            <span style="min-width:20px; font-weight:700; color:var(--blue)">3</span>
+            \(\sigma = \sqrt{\sigma^2}\)
+          </div>
+          <div class="formula-row">
+            <span style="min-width:20px; font-weight:700; color:var(--blue)">4</span>
+            <span style="font-size:13px;">Coded: if \(y = \dfrac{x-a}{b}\) then \(\bar{y} = \dfrac{\bar{x}-a}{b}\) and \(\sigma_y = \dfrac{\sigma_x}{b}\)</span>
+          </div>
+        </div>
+
+        <!-- Pitfalls box -->
+        <div class="pitfall-box">
+          <h3>Common Pitfalls</h3>
+          <div class="pitfall-item">Dividing by the number of classes instead of \(\Sigma f\) when computing \(\bar{x}\).</div>
+          <div class="pitfall-item">Forgetting to square \(\bar{x}\) when computing variance (computing \(\frac{\Sigma fx^2}{\Sigma f} - \bar{x}\) instead of \(-\bar{x}^2\)).</div>
+          <div class="pitfall-item">Using raw data values instead of midpoints for grouped frequency tables.</div>
+        </div>
+
+        <!-- Exam link -->
+        <div class="exam-link">
+          <strong style="color:var(--blue-dark);">Exam Connection:</strong> These formulas appear on S1 Papers 1–2 (1–2 marks each). The coded data formula is particularly common in Paper 1 "show that" questions.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       SLIDE 13 — Challenge / Extension
+  ═══════════════════════════════════════════════════════ -->
+  <div class="slide" id="s13">
+    <div class="slide-inner">
+      <span class="ext-badge">Extension Challenge</span>
+      <h2 class="slide-title" style="color:#3b1fa8;">Variance of a Discrete Uniform Distribution</h2>
+
+      <div class="problem-box">
+        <p>A fair six-sided die is rolled. Let \(X\) be the score shown.</p>
+        <p style="margin-top:12px;">Without using a calculator, <strong>prove</strong> that \(\text{Var}(X) = \dfrac{35}{12}\).</p>
+      </div>
+
+      <button class="hint-btn" onclick="document.getElementById('hint13').classList.toggle('show'); this.textContent = this.textContent.includes('Show') ? 'Hide Hint' : 'Show Hint';">Show Hint</button>
+
+      <div class="hint-box" id="hint13">
+        <strong>Hint:</strong> Start with \(E(X) = \dfrac{7}{2}\) (the mean of 1,2,3,4,5,6).
+        Then find \(E(X^2) = \displaystyle\sum_{x=1}^{6} x^2 \cdot \tfrac{1}{6}\).
+        Finally apply \(\text{Var}(X) = E(X^2) - [E(X)]^2\).
+      </div>
+
+      <div class="working-space student-only" style="margin-top:14px;">
+        <div class="ws-label">Your Proof — show all steps clearly</div>
+        <div class="ws-lines"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       SLIDE 14 — Whiteboard Moment
+  ═══════════════════════════════════════════════════════ -->
+  <div class="slide" id="s14">
+    <div class="slide-inner" style="justify-content:flex-start;">
+      <span class="slide-label label-green">Independent Practice</span>
+      <div class="wb-center">
+        <p class="wb-task">Work independently for 8 minutes.<br>Exercise sheet — Section 2B, Questions 1–5.</p>
+        <p class="wb-materials">📓 Exercise sheet &nbsp;·&nbsp; ✏️ Calculator &nbsp;·&nbsp; 📱 iPad working space</p>
+        <div class="timer-display" id="timer14">8:00</div>
+        <div style="margin-top:8px;">
+          <button class="timer-btn" onclick="startTimer('timer14',480)" style="border-color:var(--green); color:var(--green);">Start Timer</button>
+          <button class="timer-btn" onclick="resetTimer('timer14',480)" style="border-color:var(--green); color:var(--green);">Reset</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       SLIDE 15 — Retrieval Starter (Spaced)
+  ═══════════════════════════════════════════════════════ -->
+  <div class="slide" id="s15">
+    <div class="slide-inner">
+      <span class="slide-label label-amber">Spaced Retrieval</span>
+      <h2 class="slide-title">Retrieval Starter — 3 Questions</h2>
+
+      <div style="display:flex; gap:24px; flex:1;">
+        <div style="flex:1;">
+          <div class="retrieval-list">
+            <div class="retrieval-item">
+              <div class="time-badge badge-lesson">Last Lesson</div>
+              <div style="flex:1;">
+                <div class="ret-q">Find \(\text{Var}(X)\) if \(E(X^2) = 24\) and \(E(X) = 4\). &nbsp;<em style="font-size:12px; color:#8a9ab0;">(Chapter 6 — DRV)</em></div>
+                <div class="ret-ws">Your answer: ____________________________</div>
+              </div>
+            </div>
+            <div class="retrieval-item">
+              <div class="time-badge badge-week">Last Week</div>
+              <div style="flex:1;">
+                <div class="ret-q">A scatter diagram has \(r = -0.87\). Interpret this value in context. &nbsp;<em style="font-size:12px; color:#8a9ab0;">(Chapter 5 — Correlation)</em></div>
+                <div class="ret-ws">Your answer: ____________________________</div>
+              </div>
+            </div>
+            <div class="retrieval-item">
+              <div class="time-badge badge-month">Last Month</div>
+              <div style="flex:1;">
+                <div class="ret-q">Find \(P(A \cap B)\) if \(P(A) = 0.4\), \(P(B) = 0.3\), and \(A\), \(B\) are independent. &nbsp;<em style="font-size:12px; color:#8a9ab0;">(Chapter 4 — Probability)</em></div>
+                <div class="ret-ws">Your answer: ____________________________</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-width:160px; gap:12px;">
+          <div class="timer-display" id="timer15">5:00</div>
+          <button class="timer-btn" onclick="startTimer('timer15',300)">Start</button>
+          <button class="timer-btn" onclick="resetTimer('timer15',300)">Reset</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       SLIDE 16 — Connecting / Bridge
+  ═══════════════════════════════════════════════════════ -->
+  <div class="slide" id="s16">
+    <div class="slide-inner">
+      <span class="slide-label label-blue">Connecting Ideas</span>
+      <h2 class="slide-title">From Discrete to Continuous Distributions</h2>
+
+      <div class="bridge-layout">
+        <!-- Left: discrete -->
+        <div class="bridge-panel left">
+          <h3>You Already Know…</h3>
+          <div class="bridge-fact">
+            <strong>Discrete Distributions</strong><br>
+            e.g. fair die, biased coin
+          </div>
+          <div class="bridge-fact">
+            Each value \(x\) has exact probability \(P(X = x)\)
+          </div>
+          <div class="bridge-fact">
+            \(\displaystyle\sum_{\text{all } x} P(X = x) = 1\)
+          </div>
+          <div class="bridge-fact">
+            Displayed as a <strong>bar chart</strong> — bars have definite width and height
+          </div>
+          <div class="bridge-fact">
+            \(E(X) = \Sigma x \cdot P(X=x)\)
+          </div>
+        </div>
+
+        <!-- Arrow -->
+        <div class="bridge-arrow">
+          <svg width="60" height="60" viewBox="0 0 60 60">
+            <path d="M 8 30 L 42 30" stroke="#2F3B4C" stroke-width="2.5" stroke-linecap="round"/>
+            <path d="M 36 22 L 48 30 L 36 38" stroke="#2F3B4C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          </svg>
+        </div>
+
+        <!-- Right: continuous -->
+        <div class="bridge-panel right">
+          <h3>Now We Extend To…</h3>
+          <div class="bridge-fact">
+            <strong>Continuous Distributions</strong><br>
+            e.g. heights, times, weights
+          </div>
+          <div class="bridge-fact">
+            \(P(X = x) = 0\) for any exact value — there are infinitely many!
+          </div>
+          <div class="bridge-fact">
+            \(\displaystyle\int_{-\infty}^{+\infty} f(x)\, dx = 1\)
+          </div>
+          <div class="bridge-fact">
+            Displayed as a <strong>smooth curve</strong> — <em>area</em> under curve = probability
+          </div>
+          <div class="bridge-fact">
+            \(P(a \le X \le b) = \displaystyle\int_a^b f(x)\, dx\)
+          </div>
+        </div>
+      </div>
+
+      <div class="bridge-q">
+        "What must be true about the <em>total area</em> under any probability distribution curve?"
+      </div>
+    </div>
+  </div>
+
+</div><!-- end .slide-stage -->
+
+<!-- Navigation Bar -->
+<div id="nav-bar">
+  <button onclick="goTo(current-1)">← Prev</button>
+  <span id="slide-counter">1 / 16</span>
+  <button onclick="goTo(current+1)">Next →</button>
+</div>
+
+<!-- Widgets -->
+<script src="widgets.js"></script>
+
+<script>
+  /* ══════════════════════════════════════════════════
+     SCALE STAGE TO VIEWPORT
+  ══════════════════════════════════════════════════ */
+  function scaleStage() {
+    const scale = Math.min(window.innerWidth / 1280, window.innerHeight / 720);
+    document.getElementById('stage').style.transform =
+      `translate(-50%, -50%) scale(${scale})`;
+  }
+  scaleStage();
+  window.addEventListener('resize', scaleStage);
+
+  /* ══════════════════════════════════════════════════
+     NAVIGATION
+  ══════════════════════════════════════════════════ */
+  let current = 0;
+  const slides = document.querySelectorAll('.slide');
+
+  function goTo(n) {
+    slides[current].classList.remove('active');
+    current = Math.max(0, Math.min(n, slides.length - 1));
+    slides[current].classList.add('active');
+    document.getElementById('slide-counter').textContent = `${current + 1} / ${slides.length}`;
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); goTo(current + 1); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); goTo(current - 1); }
+  });
+
+  /* ══════════════════════════════════════════════════
+     TIMER SYSTEM
+  ══════════════════════════════════════════════════ */
+  const timers = {};
+
+  function formatTime(s) {
+    const m = Math.floor(s / 60);
+    const sec = s % 60;
+    return `${m}:${String(sec).padStart(2,'0')}`;
+  }
+
+  function startTimer(id, totalSeconds) {
+    if (timers[id]) { clearInterval(timers[id]); delete timers[id]; }
+
+    const el = document.getElementById(id);
+    let remaining = totalSeconds;
+    const displayed = el.textContent.trim();
+    const parts = displayed.split(':');
+    if (parts.length === 2) {
+      const parsed = parseInt(parts[0]) * 60 + parseInt(parts[1]);
+      if (parsed > 0 && parsed <= totalSeconds) remaining = parsed;
+    }
+
+    timers[id] = setInterval(() => {
+      remaining--;
+      el.textContent = formatTime(remaining);
+
+      el.classList.remove('amber','red');
+      if (remaining <= 10) el.classList.add('red');
+      else if (remaining <= 30) el.classList.add('amber');
+
+      if (remaining <= 0) {
+        clearInterval(timers[id]);
+        delete timers[id];
+        el.textContent = '0:00';
+        el.classList.add('red');
+      }
+    }, 1000);
+  }
+
+  function resetTimer(id, totalSeconds) {
+    if (timers[id]) { clearInterval(timers[id]); delete timers[id]; }
+    const el = document.getElementById(id);
+    el.textContent = formatTime(totalSeconds);
+    el.classList.remove('amber','red');
+  }
+</script>
+</body>
+</html>
