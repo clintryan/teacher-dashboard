@@ -1,0 +1,1780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>M6 Statistics 1 Teacher Dashboard — Clint Ryan, BCC</title>
+    <!-- Aesthetic Direction: Professional Monochrome — Deep charcoal header, clean whites, single blue accent -->
+    <!-- BCC Course Profile loaded. Shell is generic; data block is BCC-specific. -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* ============================================================
+           CSS VARIABLES — edit these for rebranding/new course profile
+           ============================================================ */
+        :root {
+            --navy:        #0F172A;
+            --navy-mid:    #1E293B;
+            --navy-light:  #1E293B;
+            --surface:     #F9FAFB;
+            --surface-alt: #FFFFFF;
+            --border:      #E2E8F0;
+            --text:        #111827;
+            --text-body:   #374151;
+            --text-muted:  #6B7280;
+            --text-light:  #9CA3AF;
+            --accent:      #2563EB;
+            --accent-dim:  #1D4ED8;
+            --done:        #374151;
+            --done-dim:    #4B5563;
+            --amber:       #B45309;
+            --amber-bg:    #FEF3C7;
+            --amber-border:#FDE68A;
+            --white:       #ffffff;
+            /* Chapter palette — neutral (no rainbow) */
+            --ch1-bg: #F3F4F6; --ch1-accent: #374151;
+            --ch2-bg: #F3F4F6; --ch2-accent: #374151;
+            --ch3-bg: #F3F4F6; --ch3-accent: #374151;
+            --ch4-bg: #F3F4F6; --ch4-accent: #374151;
+            --ch5-bg: #F3F4F6; --ch5-accent: #374151;
+            --ch6-bg: #F3F4F6; --ch6-accent: #374151;
+            --ch7-bg: #F3F4F6; --ch7-accent: #374151;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--surface);
+            color: var(--text-body);
+            line-height: 1.6;
+            font-size: 15px;
+        }
+
+        /* ============================================================  HEADER  */
+        .header {
+            background: var(--navy);
+            color: var(--white);
+            padding: 0;
+            position: sticky;
+            top: 0;
+            z-index: 200;
+            border-bottom: 3px solid var(--accent);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+        }
+        .header-inner {
+            max-width: 1680px;
+            margin: 0 auto;
+            padding: 18px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 24px;
+        }
+        .header-brand h1 {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: var(--white);
+            letter-spacing: -0.5px;
+            line-height: 1.2;
+        }
+        .header-brand .subtitle {
+            font-size: 0.78rem;
+            color: #94A3B8;
+            margin-top: 2px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .header-week {
+            text-align: center;
+            background: rgba(37,99,235,0.15);
+            border: 1px solid rgba(37,99,235,0.35);
+            border-radius: 8px;
+            padding: 10px 24px;
+        }
+        .header-week .week-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #93C5FD;
+            font-weight: 600;
+        }
+        .header-week .week-num {
+            font-family: 'Space Mono', monospace;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--white);
+            line-height: 1;
+        }
+        .header-week .week-detail {
+            font-size: 0.78rem;
+            color: #94A3B8;
+            margin-top: 2px;
+        }
+        .header-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            text-align: right;
+            font-size: 0.82rem;
+        }
+        .header-meta .meta-row { color: #CBD5E1; }
+        .header-meta .meta-row strong { color: var(--white); }
+        .header-meta .holiday-pill {
+            background: var(--amber);
+            color: var(--white);
+            border-radius: 12px;
+            padding: 3px 10px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            align-self: flex-end;
+        }
+
+        /* ============================================================  WEEK BANNER  */
+        .week-banner {
+            max-width: 1680px;
+            margin: 20px auto 0;
+            padding: 0 32px;
+        }
+        .week-card {
+            background: var(--surface-alt);
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            border-left: 6px solid var(--accent);
+            padding: 16px 24px;
+            display: flex;
+            align-items: flex-start;
+            gap: 24px;
+            box-shadow: none;
+            flex-wrap: wrap;
+        }
+        .week-card-chapter {
+            flex: 1;
+            min-width: 200px;
+        }
+        .week-card-chapter .ch-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+        .week-card-chapter .ch-name {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-top: 2px;
+        }
+        .week-card-chapter .ch-sections {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+        .week-card-focus {
+            flex: 2;
+            min-width: 280px;
+            border-left: 1px solid var(--border);
+            padding-left: 24px;
+        }
+        .week-card-focus .focus-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .week-card-focus p {
+            font-size: 0.9rem;
+            color: var(--text-body);
+            line-height: 1.6;
+        }
+        .holiday-flag {
+            background: var(--amber-bg);
+            border: 1px solid var(--amber-border);
+            border-radius: 6px;
+            padding: 8px 14px;
+            font-size: 0.82rem;
+            color: #92400E;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            align-self: flex-start;
+        }
+
+        /* ============================================================  PROGRESS BAR  */
+        .progress-section {
+            max-width: 1680px;
+            margin: 16px auto 0;
+            padding: 0 32px;
+        }
+        .progress-label {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .chapter-progress {
+            display: flex;
+            height: 28px;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+        .progress-seg {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            cursor: default;
+            transition: filter 0.15s;
+            white-space: nowrap;
+            overflow: hidden;
+            /* Default = upcoming: very light grey */
+            background: #F3F4F6;
+            color: var(--text-muted);
+        }
+        .progress-seg:hover { filter: brightness(0.95); }
+        /* done = medium grey */
+        .progress-seg.done { background: #D1D5DB !important; color: #6B7280 !important; }
+        /* current = accent blue */
+        .progress-seg.current { background: var(--accent) !important; color: #fff !important; box-shadow: inset 0 0 0 2px rgba(0,0,0,0.15); }
+
+        /* ============================================================  MAIN LAYOUT  */
+        .main-wrap {
+            max-width: 1680px;
+            margin: 20px auto;
+            padding: 0 32px;
+            display: grid;
+            grid-template-columns: 3fr 2fr;
+            gap: 24px;
+            align-items: start;
+        }
+
+        /* ============================================================  PANEL BASE  */
+        .panel {
+            background: var(--surface-alt);
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            box-shadow: none;
+            overflow: hidden;
+        }
+        .panel-header {
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+        .panel-header h2 {
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--white);
+        }
+        .panel-header-dark { background: var(--navy); }
+        .panel-header-mid { background: var(--navy-mid); }
+        .panel-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: var(--accent);
+            flex-shrink: 0;
+        }
+        .panel-body { padding: 20px 24px; }
+
+        /* ============================================================  WEEK TABLE  */
+        .week-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+        .week-table th {
+            background: var(--navy);
+            color: var(--white);
+            padding: 10px 14px;
+            text-align: left;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            font-weight: 700;
+        }
+        .week-table td {
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: top;
+            color: var(--text-body);
+        }
+        .week-table tr:last-child td { border-bottom: none; }
+        .week-table tr:hover td { background: #F8FAFC; }
+        .week-table tr.is-current td { background: #EFF6FF; font-weight: 600; border-left: 3px solid var(--accent); }
+        .week-table tr.is-holiday td { background: var(--amber-bg); }
+        .week-table tr.is-review td { background: #F8FAFC; }
+        .week-table tr.is-exam td { background: #F1F5F9; }
+        .week-num-badge {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.78rem;
+            font-weight: 700;
+            background: #1E293B;
+            color: #94A3B8;
+            border-radius: 4px;
+            padding: 2px 6px;
+            display: inline-block;
+        }
+        .week-num-badge.current { background: var(--accent); color: #fff; }
+        .ch-badge {
+            display: inline-block;
+            border-radius: 4px;
+            padding: 2px 8px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            background: #F3F4F6;
+            color: #374151;
+        }
+        .holiday-icon { color: var(--amber); font-size: 0.82rem; }
+        .assess-icon { color: var(--text-muted); font-size: 0.82rem; }
+
+        /* ============================================================  CHAPTER NOTES PANEL  */
+        .chapter-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            padding: 12px 16px;
+            background: #F8FAFC;
+            border-bottom: 1px solid var(--border);
+        }
+        .ch-tab {
+            border: 1px solid var(--border);
+            border-radius: 5px;
+            padding: 5px 10px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.15s, border-color 0.15s;
+            font-family: 'Inter', sans-serif;
+            background: #F3F4F6;
+            color: var(--text-body);
+        }
+        .ch-tab:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+        .ch-tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+        .chapter-note-pane { display: none; padding: 20px 24px; }
+        .chapter-note-pane.active { display: block; }
+        .note-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            margin-bottom: 2px;
+            color: var(--navy);
+        }
+        .note-subtitle {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+        .note-section { margin-bottom: 18px; }
+        .note-section h4 {
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            padding: 6px 10px;
+            border-radius: 3px;
+            /* All section headings: neutral dark on light grey, no rainbow */
+            background: #F3F4F6;
+            color: var(--navy);
+        }
+        .note-section p, .note-section li {
+            font-size: 0.875rem;
+            line-height: 1.65;
+            color: var(--text-body);
+        }
+        .note-section ul, .note-section ol {
+            margin-left: 18px;
+            margin-top: 4px;
+        }
+        .note-section li { margin-bottom: 6px; }
+        .note-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8rem;
+            margin-top: 8px;
+        }
+        .note-table th {
+            background: #E2E8F0;
+            padding: 7px 10px;
+            text-align: left;
+            font-weight: 700;
+            border: 1px solid #CBD5E1;
+            font-size: 0.75rem;
+            color: var(--navy);
+        }
+        .note-table td {
+            padding: 7px 10px;
+            border: 1px solid #E2E8F0;
+            vertical-align: top;
+            color: var(--text-body);
+        }
+        .note-tag {
+            display: inline-block;
+            background: #DBEAFE;
+            color: var(--accent-dim);
+            border-radius: 3px;
+            padding: 1px 6px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            margin-left: 6px;
+            vertical-align: middle;
+        }
+        .skeleton-note {
+            text-align: center;
+            padding: 32px;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            background: #F8FAFC;
+            border-radius: 6px;
+            border: 2px dashed var(--border);
+        }
+
+        /* ============================================================  ACCORDION SECTIONS  */
+        .accordion-wrap {
+            max-width: 1680px;
+            margin: 0 auto 24px;
+            padding: 0 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .accordion {
+            background: var(--surface-alt);
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            box-shadow: none;
+            overflow: hidden;
+        }
+        .accordion-trigger {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 24px;
+            background: var(--navy);
+            color: var(--white);
+            border: none;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.88rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            text-align: left;
+            transition: background 0.15s;
+        }
+        .accordion-trigger:hover { background: var(--navy-mid); }
+        .accordion-trigger .acc-left { display: flex; align-items: center; gap: 10px; }
+        .acc-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+        .acc-arrow { transition: transform 0.2s; font-size: 0.8rem; color: #93C5FD; }
+        .accordion.open .acc-arrow { transform: rotate(180deg); }
+        .accordion-body { display: none; }
+        .accordion.open .accordion-body { display: block; }
+        .accordion-body-inner { padding: 24px; }
+
+        /* ============================================================  CLASS INTEL CARDS  */
+        .class-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 16px;
+        }
+        .class-card {
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            box-shadow: none;
+        }
+        .class-card-header {
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--navy);
+        }
+        .class-card-header h3 {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--white);
+        }
+        .class-track-badge {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: rgba(255,255,255,0.15);
+            color: #CBD5E1;
+            border-radius: 4px;
+            padding: 3px 8px;
+        }
+        .class-card-body { padding: 16px 18px; background: var(--surface-alt); }
+        .class-card-body p { font-size: 0.875rem; color: var(--text-body); line-height: 1.6; margin-bottom: 8px; }
+        .class-card-body p:last-child { margin-bottom: 0; }
+        /* 611 badge: accent blue for the EXT badge only, per spec */
+        .class-card.c611 .class-card-header { background: var(--navy); border-left: 4px solid var(--accent); }
+        .class-card.c612 .class-card-header { background: var(--navy); }
+        .class-card.c613 .class-card-header { background: var(--navy); }
+        .class-card.c614 .class-card-header { background: var(--navy); }
+        /* Student flags — monochrome with left border for severity */
+        .student-flag {
+            display: flex;
+            gap: 8px;
+            background: #FFFBEB;
+            border-left: 3px solid var(--amber);
+            border-radius: 0 4px 4px 0;
+            padding: 8px 12px;
+            margin-bottom: 8px;
+            font-size: 0.82rem;
+            color: #78350F;
+            line-height: 1.5;
+        }
+        .student-flag.red {
+            background: #FFF7F7;
+            border-left-color: var(--amber);
+            border-left-width: 4px;
+            color: #7F1D1D;
+        }
+        .student-flag.green {
+            background: #F8FAFC;
+            border-left-color: #6B7280;
+            color: var(--text-body);
+        }
+
+        /* ============================================================  PREP CHECKLIST  */
+        .checklist { list-style: none; margin: 0; padding: 0; }
+        .checklist-section { margin-bottom: 20px; }
+        .checklist-section-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 8px;
+            padding-bottom: 4px;
+            border-bottom: 1px solid var(--border);
+        }
+        .checklist li {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 6px 0;
+            font-size: 0.875rem;
+            color: var(--text-body);
+            line-height: 1.5;
+        }
+        .checklist input[type="checkbox"] {
+            margin-top: 2px;
+            flex-shrink: 0;
+            width: 15px;
+            height: 15px;
+            cursor: pointer;
+            accent-color: var(--accent);
+        }
+        .extension-block {
+            background: #EFF6FF;
+            border: 1px solid #BFDBFE;
+            border-left: 4px solid var(--accent);
+            border-radius: 0 8px 8px 0;
+            padding: 14px 16px;
+            margin-top: 12px;
+        }
+        .extension-block .ext-label {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+            color: var(--accent-dim);
+            margin-bottom: 8px;
+        }
+        .extension-block li { color: var(--navy); }
+
+        /* ============================================================  LESSON FRAMEWORK  */
+        .lesson-phase {
+            display: grid;
+            grid-template-columns: 80px 1fr 1fr 1fr;
+            gap: 1px;
+            background: var(--border);
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+        .lp-cell {
+            padding: 10px 14px;
+            background: var(--surface-alt);
+            font-size: 0.82rem;
+            line-height: 1.5;
+            color: var(--text-body);
+        }
+        .lp-header {
+            background: var(--navy);
+            color: var(--white);
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .lp-phase-label { font-weight: 700; color: var(--navy); font-size: 0.78rem; }
+        .lp-time { color: var(--text-muted); font-size: 0.78rem; }
+
+        /* ============================================================  ASSESSMENT TIMELINE  */
+        .assessment-list { display: flex; flex-direction: column; gap: 10px; }
+        .assessment-item {
+            display: grid;
+            grid-template-columns: 150px 1fr auto;
+            gap: 16px;
+            align-items: center;
+            padding: 14px 18px;
+            background: #F8FAFC;
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--text-muted);
+            border-radius: 0 6px 6px 0;
+        }
+        .assessment-item.quiz { border-left-color: var(--accent); }
+        .assessment-item.exam { border-left-color: var(--navy); }
+        .a-date { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; }
+        .a-name { font-weight: 700; font-size: 0.95rem; color: var(--text); }
+        .a-detail { font-size: 0.82rem; color: var(--text-muted); margin-top: 2px; }
+        .a-badge {
+            border-radius: 4px;
+            padding: 4px 10px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-align: center;
+            white-space: nowrap;
+            border: 1px solid var(--border);
+        }
+        .a-badge.homework { background: #F3F4F6; color: var(--text-body); }
+        .a-badge.quiz-b { background: #DBEAFE; color: var(--accent-dim); }
+        .a-badge.exam-b { background: #1E293B; color: #F1F5F9; }
+
+        /* ============================================================  DIFFERENTIATION  */
+        .diff-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        .diff-track {
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+        .diff-track-header {
+            padding: 12px 16px;
+            color: var(--white);
+            font-weight: 700;
+            font-size: 0.88rem;
+        }
+        .diff-track-header.track1 { background: var(--navy); }
+        .diff-track-header.track2 { background: var(--navy-mid); }
+        .diff-track-body {
+            padding: 14px 16px;
+            background: #F8FAFC;
+            font-size: 0.82rem;
+            line-height: 1.6;
+            color: var(--text-body);
+        }
+        .diff-track-body ul { margin-left: 16px; }
+        .diff-track-body li { margin-bottom: 6px; }
+        .diff-ch-note {
+            padding: 10px 14px;
+            background: #F8FAFC;
+            border-left: 3px solid var(--border);
+            border-radius: 0 4px 4px 0;
+            font-size: 0.82rem;
+            color: var(--text-body);
+            margin-bottom: 6px;
+            border: 1px solid var(--border);
+        }
+        .diff-ch-label {
+            font-weight: 700;
+            color: var(--navy);
+            font-size: 0.78rem;
+        }
+
+        /* ============================================================  PACING / HOLIDAYS  */
+        .holiday-list { display: flex; flex-direction: column; gap: 8px; }
+        .holiday-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 10px 16px;
+            background: var(--amber-bg);
+            border: 1px solid var(--amber-border);
+            border-radius: 6px;
+            font-size: 0.875rem;
+        }
+        .holiday-item .h-week {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--amber);
+            min-width: 50px;
+        }
+        .holiday-item .h-name { font-weight: 600; color: #92400E; flex: 1; }
+        .holiday-item .h-days { font-size: 0.78rem; color: var(--text-muted); }
+
+        /* ============================================================  FOOTER  */
+        .footer {
+            max-width: 1680px;
+            margin: 0 auto;
+            padding: 12px 32px 32px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .footer .product-note {
+            background: #F1F5F9;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 4px 10px;
+            font-style: italic;
+            color: var(--text-muted);
+        }
+
+        /* ============================================================  PRINT  */
+        @media print {
+            .header, .week-banner, .progress-section { page-break-after: avoid; }
+            .accordion-body { display: block !important; }
+            .main-wrap { grid-template-columns: 1fr; }
+            body { background: white; font-size: 12px; }
+        }
+
+        /* ============================================================  RESPONSIVE  */
+        @media (max-width: 1200px) {
+            .main-wrap { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 768px) {
+            .header-inner { flex-direction: column; align-items: flex-start; }
+            .header-meta { text-align: left; }
+            .week-banner, .progress-section, .main-wrap, .accordion-wrap { padding: 0 16px; }
+            .lesson-phase { grid-template-columns: 1fr; }
+            .diff-grid { grid-template-columns: 1fr; }
+            .assessment-item { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ================================================================
+     HEADER
+     ================================================================ -->
+<header class="header">
+    <div class="header-inner">
+        <div class="header-brand">
+            <h1>M6 Statistics 1</h1>
+            <div class="subtitle">Bangkok Christian College &middot; Semester 1, 2026 &middot; Clint Ryan</div>
+        </div>
+
+        <div class="header-week">
+            <div class="week-label">Current Week</div>
+            <div class="week-num" id="hdr-week-num">—</div>
+            <div class="week-detail" id="hdr-week-detail">Calculating…</div>
+        </div>
+
+        <div class="header-meta">
+            <div class="meta-row">Today: <strong id="hdr-today">—</strong></div>
+            <div class="meta-row">Term: <strong>May 5 – Sep 18, 2026</strong></div>
+            <div class="meta-row">Classes: <strong>611 &middot; 612 &middot; 613 &middot; 614</strong></div>
+            <div id="hdr-holiday-pill" style="display:none;"></div>
+        </div>
+    </div>
+</header>
+
+<!-- ================================================================
+     THIS WEEK BANNER
+     ================================================================ -->
+<div class="week-banner">
+    <div class="week-card" id="week-card">
+        <div class="week-card-chapter">
+            <div class="ch-label">This Week</div>
+            <div class="ch-name" id="wk-chapter">—</div>
+            <div class="ch-sections" id="wk-sections">—</div>
+        </div>
+        <div class="week-card-focus">
+            <div class="focus-label">Week Focus</div>
+            <p id="wk-focus">—</p>
+        </div>
+        <div id="wk-holiday-flag" style="display:none;" class="holiday-flag">
+            <span>⚠️</span>
+            <span id="wk-holiday-text"></span>
+        </div>
+    </div>
+</div>
+
+<!-- ================================================================
+     CHAPTER PROGRESS BAR
+     ================================================================ -->
+<div class="progress-section" style="margin-top:12px;">
+    <div class="progress-label">Chapter Progress — Semester 1</div>
+    <div class="chapter-progress" id="chapter-progress-bar"></div>
+</div>
+
+<!-- ================================================================
+     MAIN PANELS: LEFT (Calendar) + RIGHT (Chapter Notes)
+     ================================================================ -->
+<div class="main-wrap">
+
+    <!-- LEFT PANEL: Weekly Calendar -->
+    <div class="panel">
+        <div class="panel-header panel-header-dark">
+            <div class="panel-dot"></div>
+            <h2>19-Week Teaching Calendar</h2>
+        </div>
+        <div style="overflow-x:auto;">
+            <table class="week-table" id="main-calendar">
+                <thead>
+                    <tr>
+                        <th>Wk</th>
+                        <th>Dates</th>
+                        <th>Chapter / Section</th>
+                        <th>Content</th>
+                        <th>Flags</th>
+                    </tr>
+                </thead>
+                <tbody id="calendar-body"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- RIGHT PANEL: Chapter Knowledge Notes -->
+    <div class="panel" style="position:sticky; top: 82px; max-height: calc(100vh - 100px); overflow-y: auto;">
+        <div class="panel-header panel-header-dark">
+            <div class="panel-dot"></div>
+            <h2>Teacher Knowledge Notes</h2>
+        </div>
+        <!-- Chapter selector tabs -->
+        <div class="chapter-tabs" id="chapter-tabs"></div>
+        <!-- Chapter note panes -->
+        <div id="chapter-notes-container"></div>
+    </div>
+
+</div>
+
+<!-- ================================================================
+     ACCORDION SECTIONS
+     ================================================================ -->
+<div class="accordion-wrap">
+
+    <!-- CLASS INTELLIGENCE -->
+    <div class="accordion" id="acc-class-intel">
+        <button class="accordion-trigger" onclick="toggleAccordion('acc-class-intel')">
+            <span class="acc-left"><span class="acc-dot"></span> Class Intelligence — Per-Class Student Profiles</span>
+            <span class="acc-arrow">▼</span>
+        </button>
+        <div class="accordion-body">
+            <div class="accordion-body-inner">
+                <p style="font-size:0.82rem; color:var(--text-muted); margin-bottom:16px; font-style:italic;">
+                    M6 is the graduating class. Schedule is frequently interrupted by special school events — roll with it. Class-level notes only; no individual student data stored here.
+                </p>
+                <div class="class-grid" id="class-intel-grid"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- WEEKLY PREP CHECKLIST -->
+    <div class="accordion" id="acc-checklist">
+        <button class="accordion-trigger" onclick="toggleAccordion('acc-checklist')">
+            <span class="acc-left"><span class="acc-dot"></span> Weekly Prep Checklist</span>
+            <span class="acc-arrow">▼</span>
+        </button>
+        <div class="accordion-body">
+            <div class="accordion-body-inner">
+                <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:16px;">
+                    Shown for <strong>Week 7 (Jun 22–28)</strong> as a live example — Sections 4.4–4.6 (Set Notation, Conditional Probability). Other weeks follow the same template.
+                </p>
+                <div id="checklist-body"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- LESSON STRUCTURE FRAMEWORK -->
+    <div class="accordion" id="acc-lesson">
+        <button class="accordion-trigger" onclick="toggleAccordion('acc-lesson')">
+            <span class="acc-left"><span class="acc-dot"></span> 40-Minute Lesson Structure Framework</span>
+            <span class="acc-arrow">▼</span>
+        </button>
+        <div class="accordion-body">
+            <div class="accordion-body-inner" id="lesson-body"></div>
+        </div>
+    </div>
+
+    <!-- ASSESSMENT TRACKER -->
+    <div class="accordion" id="acc-assessment">
+        <button class="accordion-trigger" onclick="toggleAccordion('acc-assessment')">
+            <span class="acc-left"><span class="acc-dot"></span> Assessment Calendar & Due Dates</span>
+            <span class="acc-arrow">▼</span>
+        </button>
+        <div class="accordion-body">
+            <div class="accordion-body-inner">
+                <p style="font-size:0.82rem; color:var(--text-muted); margin-bottom:16px;">
+                    Grading: Participation 20% &middot; Assignments 20% &middot; Quizzes 40% &middot; Final Exam 20%
+                </p>
+                <div class="assessment-list" id="assessment-body"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DIFFERENTIATION -->
+    <div class="accordion" id="acc-diff">
+        <button class="accordion-trigger" onclick="toggleAccordion('acc-diff')">
+            <span class="acc-left"><span class="acc-dot"></span> Track 1 vs. 614 Differentiation Reference</span>
+            <span class="acc-arrow">▼</span>
+        </button>
+        <div class="accordion-body">
+            <div class="accordion-body-inner" id="diff-body"></div>
+        </div>
+    </div>
+
+    <!-- PACING & HOLIDAYS -->
+    <div class="accordion" id="acc-pacing">
+        <button class="accordion-trigger" onclick="toggleAccordion('acc-pacing')">
+            <span class="acc-left"><span class="acc-dot"></span> Pacing Alerts & Holiday Impact</span>
+            <span class="acc-arrow">▼</span>
+        </button>
+        <div class="accordion-body">
+            <div class="accordion-body-inner" id="pacing-body"></div>
+        </div>
+    </div>
+
+    <!-- CLASSROOM SETUP -->
+    <div class="accordion" id="acc-setup">
+        <button class="accordion-trigger" onclick="toggleAccordion('acc-setup')">
+            <span class="acc-left"><span class="acc-dot"></span> Classroom Setup & Resources</span>
+            <span class="acc-arrow">▼</span>
+        </button>
+        <div class="accordion-body">
+            <div class="accordion-body-inner" id="setup-body"></div>
+        </div>
+    </div>
+
+</div>
+
+<footer class="footer">
+    <span>M6 Statistics 1 · BCC Semester 1, 2026 · Clint Ryan</span>
+    <span class="product-note">Generic Teacher Dashboard — BCC course profile loaded. Shell is reusable for any teacher/course.</span>
+</footer>
+
+<!-- ================================================================
+     DATA & LOGIC
+     ================================================================ -->
+<script>
+/* ====================================================================
+   COURSE PROFILE — BCC-SPECIFIC DATA BLOCK
+   (In a future version, swap this for any teacher's course profile)
+   ==================================================================== */
+const COURSE = {
+    name: 'M6 Statistics 1',
+    teacher: 'Clint Ryan',
+    school: 'Bangkok Christian College',
+    termStart: new Date(2026, 4, 5),   // May 5, 2026 (orientation)
+    week1Start: new Date(2026, 4, 11), // May 11, 2026 (Week 1)
+    termEnd:   new Date(2026, 8, 18),  // Sep 18, 2026
+    totalWeeks: 19,
+    classes: ['611','612','613','614'],
+    gradingBreakdown: { participation: 20, assignments: 20, quizzes: 40, final: 20 }
+};
+
+const WEEKS = [
+    { num: 0,  start:'2026-05-05', end:'2026-05-09', chapter:'Orientation',                   sections:'Admin / Setup',             pages:'—',                      focus:'Orientation week. No student instruction. Set up classroom, review course outline, confirm timetable.',  holiday:null, ext611:false },
+    { num: 1,  start:'2026-05-11', end:'2026-05-15', chapter:'Ch. 1: Mathematical Modelling', sections:'1.1–1.2',                   pages:'pp. 1–4',                focus:'Introduce the modelling cycle: problem → model → test → refine. Establish classroom norms. Short chapter — move efficiently.',  holiday:'Royal Ploughing Day (Mon May 11) — 4 teaching days', ext611:false },
+    { num: 2,  start:'2026-05-18', end:'2026-05-22', chapter:'Ch. 2: Measures of Location',   sections:'2.1–2.4',                   pages:'pp. 5–16',               focus:'Location measures: mean, median, mode, quartiles. Begin with ungrouped data; move to grouped. EXTENSION WEEK for 611.',  holiday:null, ext611:true },
+    { num: 3,  start:'2026-05-25', end:'2026-05-29', chapter:'Ch. 2: Measures of Spread',     sections:'2.5–2.6',                   pages:'pp. 17–28',              focus:'Spread: range, IQR, variance, standard deviation, coding. Assignment 1 due end of week.', holiday:null, ext611:false },
+    { num: 4,  start:'2026-06-01', end:'2026-06-05', chapter:'Ch. 3: Representations (1)',    sections:'3.1–3.3',                   pages:'pp. 29–41',              focus:'Histograms (frequency density), outliers. EXTENSION WEEK for 611. Holidays reduce to 3 teaching days.',  holiday:'Visakha Bucha (Mon Jun 1), Queen Mother\'s Birthday (Wed Jun 3) — 3 teaching days', ext611:true },
+    { num: 5,  start:'2026-06-08', end:'2026-06-12', chapter:'Ch. 3: Representations (2)',    sections:'3.4–3.6 + Rev Ex 1',        pages:'pp. 42–53, 88–94',       focus:'Box plots, stem & leaf, skewness. Review Exercise 1 closes Chapters 1–3. Prepare for Probability.',  holiday:null, ext611:false },
+    { num: 6,  start:'2026-06-15', end:'2026-06-19', chapter:'Ch. 4: Probability (Part 1)',   sections:'4.1–4.3',                   pages:'pp. 54–67',              focus:'Vocabulary, Venn diagrams, mutually exclusive & independent. EXTENSION WEEK for 611. Foundation week — do not rush.',  holiday:null, ext611:true },
+    { num: 7,  start:'2026-06-22', end:'2026-06-26', chapter:'Ch. 4: Probability (Part 2)',   sections:'4.4–4.6',                   pages:'pp. 68–80',              focus:'Set notation, conditional probability, conditional probabilities in Venn diagrams. Assignment 2 set this week.',  holiday:null, ext611:false },
+    { num: 8,  start:'2026-06-29', end:'2026-07-03', chapter:'Ch. 4: Probability (Part 3)',   sections:'4.7–4.8',                   pages:'pp. 81–87',              focus:'Probability formulae, tree diagrams. EXTENSION WEEK for 611. Midterm Quiz at end of week/start of Week 9.',  holiday:null, ext611:true },
+    { num: 9,  start:'2026-07-06', end:'2026-07-10', chapter:'Ch. 5: Correlation & Regression (1)', sections:'5.1–5.2',            pages:'pp. 95–109',             focus:'Scatter diagrams, regression line y = a + bx, product moment correlation coefficient (PMCC). Midterm Quiz this week if not done.',  holiday:null, ext611:false },
+    { num: 10, start:'2026-07-13', end:'2026-07-17', chapter:'Ch. 5: Regression (Continued)', sections:'5.3–5.4',                  pages:'pp. 110–123',            focus:'Regression continued, interpretation of r and regression line. EXTENSION WEEK for 611. Assignment 3 due end of week.',  holiday:null, ext611:true },
+    { num: 11, start:'2026-07-20', end:'2026-07-24', chapter:'Ch. 6: Discrete Random Variables (1)', sections:'6.1–6.3',           pages:'pp. 124–138',            focus:'DRV definitions, probability distribution tables, CDF. Most abstract chapter — pace carefully especially for 614.',  holiday:null, ext611:false },
+    { num: 12, start:'2026-07-27', end:'2026-07-31', chapter:'Ch. 6: DRV (Continued)',        sections:'6.4–6.5',                  pages:'pp. 139–145',            focus:'E(X), Var(X). EXTENSION WEEK for 611. Two holidays — only 3 teaching days. Adjust pacing.',  holiday:'King\'s Birthday (Mon Jul 28), Asalha Bucha (Tue Jul 29) — 3 teaching days', ext611:true },
+    { num: 13, start:'2026-08-03', end:'2026-08-07', chapter:'Ch. 6: DRV (Completed)',        sections:'6.6–6.7',                  pages:'pp. 146–150',            focus:'Linear transformations E(aX+b), Var(aX+b). Discrete uniform distribution. Close Ch. 6.',  holiday:null, ext611:false },
+    { num: 14, start:'2026-08-10', end:'2026-08-14', chapter:'Ch. 7: Normal Distribution (1)', sections:'7.1–7.2',                 pages:'pp. 151–161',            focus:'Normal distribution properties, standardising Z = (X−μ)/σ. EXTENSION WEEK for 611. Queen\'s Birthday reduces to 4 days.',  holiday:"Queen's Birthday (Wed Aug 12) — 4 teaching days", ext611:true },
+    { num: 15, start:'2026-08-17', end:'2026-08-21', chapter:'Ch. 7: Normal Distribution (2)', sections:'7.3–7.4',                 pages:'pp. 162–167',            focus:'Using Φ tables, P(a < X < b) calculations. Assignment 4 due mid-week.',  holiday:null, ext611:false },
+    { num: 16, start:'2026-08-24', end:'2026-08-28', chapter:'Ch. 7: Normal Distribution (3)', sections:'7.5 + Rev Ex 2',          pages:'pp. 168–178',            focus:'Finding μ and σ, Review Exercise 2. EXTENSION WEEK for 611. Unit Quiz at end of week.',  holiday:null, ext611:true },
+    { num: 17, start:'2026-08-31', end:'2026-09-04', chapter:'Review Week (Part 1)',           sections:'Rev Ex 2 + Exam Practice', pages:'pp. 172–182',            focus:'Topic-by-topic review. Use past paper questions grouped by chapter. Flag persistent weak spots.',  holiday:null, ext611:false },
+    { num: 18, start:'2026-09-07', end:'2026-09-11', chapter:'Review Week (Part 2)',           sections:'Timed Exam Practice',      pages:'pp. 179–182',            focus:'Full mixed timed exam simulation. Exam conditions. Debrief immediately after.',  holiday:null, ext611:false },
+    { num: 19, start:'2026-09-14', end:'2026-09-18', chapter:'Final Examination',             sections:'Chapters 1–7 (All)',        pages:'—',                      focus:'Final exam administered by school. No new instruction. Be available for individual queries before exam.',  holiday:null, ext611:false },
+];
+
+const CHAPTERS = [
+    { num:1, title:'Mathematical Modelling',       weeks:'1',    pages:'1–4',    color:'ch1', accent:'#db2777', pct:5 },
+    { num:2, title:'Measures of Location & Spread',weeks:'2–3',  pages:'5–28',   color:'ch2', accent:'#7c3aed', pct:10 },
+    { num:3, title:'Representations of Data',      weeks:'4–5',  pages:'29–53',  color:'ch3', accent:'#0284c7', pct:10 },
+    { num:4, title:'Probability',                  weeks:'6–8',  pages:'54–87',  color:'ch4', accent:'#16a34a', pct:16 },
+    { num:5, title:'Correlation & Regression',     weeks:'9–10', pages:'95–123', color:'ch5', accent:'#d97706', pct:11 },
+    { num:6, title:'Discrete Random Variables',    weeks:'11–13',pages:'124–150',color:'ch6', accent:'#dc2626', pct:16 },
+    { num:7, title:'Normal Distribution',          weeks:'14–16',pages:'151–171',color:'ch7', accent:'#9333ea', pct:16 },
+];
+
+const ASSESSMENTS = [
+    { name:'Assignment 1',  chapter:'Ch. 2',    date:'End Week 3 (May 29)',        type:'homework', weight:'10% Q1', detail:'Measures of location and spread. 614: provide scaffold worksheet for grouped mean.' },
+    { name:'Assignment 2',  chapter:'Ch. 4',    date:'Week 7 (set Mon Jun 22)',    type:'homework', weight:'10% Q1', detail:'Probability — Venn diagrams, conditional probability. 614: emphasise Venn over set notation.' },
+    { name:'Midterm Quiz',  chapter:'Chs. 1–4', date:'End Wk 8 / Start Wk 9',     type:'quiz',     weight:'20% Q1', detail:'50–60 min, mixed short-answer and longer problems. Confirm exact date with admin.' },
+    { name:'Assignment 3',  chapter:'Ch. 5',    date:'End Week 10 (Jul 17)',       type:'homework', weight:'10% Q2', detail:'Correlation, regression, PMCC interpretation.' },
+    { name:'Assignment 4',  chapter:'Ch. 7',    date:'Mid-Week 15 (Aug 17–21)',    type:'homework', weight:'10% Q2', detail:'Normal distribution probability calculations.' },
+    { name:'Unit Quiz',     chapter:'Chs. 5–7', date:'End Week 16 (Aug 24–28)',    type:'quiz',     weight:'20% Q2', detail:'50 min. Regression, DRV, Normal Distribution. Confirm exact date with admin.' },
+    { name:'Final Exam',    chapter:'Chs. 1–7', date:'Week 19 (Sep 14–18)',        type:'exam',     weight:'20% Overall', detail:'School-wide. All topics. Administered by admin.' },
+];
+
+const HOLIDAYS = [
+    { week:'W1',  dates:'Mon May 11',       name:'Royal Ploughing Day',                         days:4 },
+    { week:'W4',  dates:'Mon Jun 1 + Wed Jun 3', name:'Visakha Bucha + Queen Mother\'s Birthday', days:3 },
+    { week:'W12', dates:'Mon Jul 28 + Tue Jul 29', name:"King's Birthday + Asalha Bucha",         days:3 },
+    { week:'W14', dates:'Wed Aug 12',       name:"Queen's Birthday",                              days:4 },
+];
+
+const CLASS_INTEL = [
+    {
+        id:'c611', name:'611', track:'Track 1 — Doctor / Biomedical',
+        overview:'Brightest class. Doctor/biomedical engineering track. Students engage quickly and get bored if unchallenged — have extension material ready roughly every two weeks.',
+        flags:[
+            { type:'green', icon:'★', text:'A double-period day is ideal for a self-contained off-textbook challenge lesson. Prepare extension material roughly every two weeks (even weeks: 2, 4, 6, 8, 10, 12, 14, 16).' },
+        ]
+    },
+    {
+        id:'c612', name:'612', track:'Track 1 — Robotics',
+        overview:'Smaller class. Robotics track. Easygoing pace — students don\'t push themselves.',
+        flags:[
+            { type:'yellow', icon:'⚠', text:'Watch for group dynamics during assessments; seat strategically.' },
+            { type:'yellow', icon:'→', text:'One student may need extra behavioural awareness — ask colleague Mark for context before your first lesson.' },
+        ]
+    },
+    {
+        id:'c613', name:'613', track:'Track 1 — Architecture / Engineering',
+        overview:'Architecture/engineering track. Solid, easygoing, not exceptional. A couple of strong students but overall moderate.',
+        flags:[
+            { type:'yellow', icon:'→', text:'They want to learn but won\'t push for extension. Standard pacing works well.' },
+        ]
+    },
+    {
+        id:'c614', name:'614', track:'Track 2 — Arts / Culinary / Liberal Arts',
+        overview:'Arts/culinary/liberal arts. Convention is \'math lite\' but the better approach is teaching harder concepts in a simpler way with more grading leeway.',
+        flags:[
+            { type:'green', icon:'★', text:'Students respond well to not being treated as the \'dummy class.\' Keep the framing positive.' },
+            { type:'yellow', icon:'→', text:'More grading leeway = scaffolded tasks, more partial credit, accessible language. Not lower standards.' },
+            { type:'yellow', icon:'⚠', text:'Red-flag chapters: 4 (Probability) and 6 (DRV). Watch pacing closely. If losing the class, slow down and consolidate.' },
+        ]
+    },
+];
+
+const DIFFERENTIATION_614 = {
+    principles:[
+        'Prioritise interpretation over derivation. Explain results; don\'t require formula derivation.',
+        'Concrete before abstract. Anchor every concept in a real, accessible example before introducing notation.',
+        'Structured scaffolding. Step-by-step worksheets for all procedures (table setup, histogram construction, CDF).',
+        'Table-lookup fluency. Drill normal distribution Φ tables heavily — rewards practice and builds confidence.',
+        'Pace the hard chapters. Ch. 4 (Probability) and Ch. 6 (DRV) are where 614 most often falls behind. Slow down; use an extra lesson if needed.',
+    ],
+    chapters:[
+        { num:1, note:'Frame as "common sense about models," not fancy maths. Visuals and real examples. No abstract formalism.' },
+        { num:2, note:'Extra time on "mean from a grouped frequency table" — high-frequency exam error. Use structured worksheets with clearly labelled steps.' },
+        { num:3, note:'Histogram frequency density is the biggest hurdle. Provide a step-by-step checklist. Skewness: visual description before algebraic rules.' },
+        { num:4, note:'THE hard chapter. Build very slowly. Prioritise Venn diagrams and tree diagrams over set notation. Avoid heavy algebra until concepts are secure.' },
+        { num:5, note:'Show why regression matters in business/social science (sales prediction, trend analysis). Use calculator for Sxy/Sxx. Focus on interpreting r and the line.' },
+        { num:6, note:'Most abstract chapter. Start with concrete distribution tables (fair die, spinner). Teach E(X) and Var(X) as rules to apply, not derive.' },
+        { num:7, note:'Spend a full lesson on Φ table-lookup fluency only (no calculations). Then layer standardisation. Section 7.5 (finding μ and σ) is optional for time-pressed 614.' },
+    ]
+};
+
+/* ====================================================================
+   WEEK CALCULATION
+   ==================================================================== */
+function getWeekInfo(today) {
+    const w1 = COURSE.week1Start;
+    const msPerWeek = 7 * 24 * 3600 * 1000;
+    if (today < COURSE.termStart) return { num: -1, label:'Pre-Term', detail:'Semester begins May 5, 2026' };
+    if (today < w1) return { num: 0, label:'W0', detail:'Orientation Week' };
+    const diff = today - w1;
+    const wNum = Math.floor(diff / msPerWeek) + 1;
+    if (wNum > COURSE.totalWeeks) return { num: 99, label:'Post-Term', detail:'Semester complete' };
+    return { num: wNum, label:`W${wNum}`, detail:`of ${COURSE.totalWeeks}` };
+}
+
+function formatDateShort(d) {
+    return d.toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric', year:'numeric' });
+}
+
+function formatDateRange(s, e) {
+    const sd = new Date(s), ed = new Date(e);
+    const mo = sd.toLocaleDateString('en-US',{month:'short'});
+    const sd2 = sd.toLocaleDateString('en-US',{day:'numeric'});
+    const ed2 = ed.toLocaleDateString('en-US',{month:'short', day:'numeric'});
+    return `${mo} ${sd2} – ${ed2}`;
+}
+
+/* ====================================================================
+   INIT HEADER & WEEK BANNER
+   ==================================================================== */
+function initHeader() {
+    const today = new Date();
+    const wi = getWeekInfo(today);
+
+    document.getElementById('hdr-today').textContent = formatDateShort(today);
+    document.getElementById('hdr-week-num').textContent = wi.label;
+    document.getElementById('hdr-week-detail').textContent = wi.detail;
+
+    // Find current week data
+    const wkData = WEEKS.find(w => w.num === wi.num);
+    if (wkData) {
+        if (wkData.holiday) {
+            const pill = document.getElementById('hdr-holiday-pill');
+            pill.style.display = 'block';
+            pill.innerHTML = `<span class="holiday-pill">⚠ Holiday Week</span>`;
+            document.getElementById('wk-holiday-flag').style.display = 'flex';
+            document.getElementById('wk-holiday-text').textContent = wkData.holiday;
+        }
+        document.getElementById('wk-chapter').textContent = wkData.chapter;
+        document.getElementById('wk-sections').textContent = `Sections ${wkData.sections} · ${wkData.pages}`;
+        document.getElementById('wk-focus').textContent = wkData.focus;
+    } else {
+        document.getElementById('wk-chapter').textContent = 'No active teaching week';
+        document.getElementById('wk-sections').textContent = 'Check the semester calendar below';
+        document.getElementById('wk-focus').textContent = 'Dashboard loaded outside the semester window.';
+    }
+}
+
+/* ====================================================================
+   PROGRESS BAR
+   ==================================================================== */
+function buildProgressBar() {
+    const today = new Date();
+    const wi = getWeekInfo(today);
+    const bar = document.getElementById('chapter-progress-bar');
+
+    // Map chapter weeks to determine current/done status
+    const chWeekMap = { 1:[1], 2:[2,3], 3:[4,5], 4:[6,7,8], 5:[9,10], 6:[11,12,13], 7:[14,15,16] };
+    const reviewPct = 16; // review+exam weeks
+    const chTotalPct = 84;
+
+    CHAPTERS.forEach(ch => {
+        const seg = document.createElement('div');
+        seg.className = 'progress-seg';
+        seg.style.flex = ch.pct;
+        // No background override — CSS classes handle colors (done=grey, current=blue, upcoming=light grey)
+
+        const chWeeks = chWeekMap[ch.num] || [];
+        const maxChWeek = Math.max(...chWeeks);
+        const minChWeek = Math.min(...chWeeks);
+
+        if (wi.num > maxChWeek) { seg.classList.add('done'); }
+        else if (wi.num >= minChWeek && wi.num <= maxChWeek) { seg.classList.add('current'); }
+
+        seg.textContent = `Ch.${ch.num}`;
+        seg.title = `Chapter ${ch.num}: ${ch.title} (Weeks ${ch.weeks})`;
+        bar.appendChild(seg);
+    });
+
+    // Review + Exam segments
+    const reviewSeg = document.createElement('div');
+    reviewSeg.className = 'progress-seg';
+    reviewSeg.style.flex = 8;
+    reviewSeg.textContent = 'Rev';
+    reviewSeg.title = 'Review Weeks 17–18';
+    if (wi.num > 18) reviewSeg.classList.add('done');
+    else if (wi.num >= 17 && wi.num <= 18) reviewSeg.classList.add('current');
+    bar.appendChild(reviewSeg);
+
+    const examSeg = document.createElement('div');
+    examSeg.className = 'progress-seg';
+    examSeg.style.flex = 8;
+    examSeg.textContent = 'Exam';
+    examSeg.title = 'Final Exam Week 19';
+    if (wi.num > 19) examSeg.classList.add('done');
+    else if (wi.num === 19) examSeg.classList.add('current');
+    bar.appendChild(examSeg);
+}
+
+/* ====================================================================
+   CALENDAR TABLE
+   ==================================================================== */
+function buildCalendar() {
+    const tbody = document.getElementById('calendar-body');
+    const today = new Date();
+    const wi = getWeekInfo(today);
+
+    WEEKS.forEach(wk => {
+        const tr = document.createElement('tr');
+        let rowClass = '';
+        if (wk.num === wi.num) rowClass = 'is-current';
+        else if (wk.holiday) rowClass = 'is-holiday';
+        else if (wk.num >= 17 && wk.num <= 18) rowClass = 'is-review';
+        else if (wk.num === 19) rowClass = 'is-exam';
+        tr.className = rowClass;
+
+        const isCurrent = wk.num === wi.num;
+        const wkBadge = `<span class="week-num-badge${isCurrent?' current':''}">${wk.num === 0 ? 'W0' : 'W'+wk.num}</span>`;
+        const dateRange = formatDateRange(wk.start, wk.end);
+
+        // Chapter badge — neutral styling via CSS class
+        const chBadge = `<span class="ch-badge">${wk.chapter}</span>`;
+
+        let flags = '';
+        if (wk.holiday) flags += `<span class="holiday-icon" style="color:#B45309; font-size:0.82rem; display:block;">⚠ ${wk.holiday}</span>`;
+        if (wk.ext611) flags += `<span style="display:inline-block; margin-top:4px; font-size:0.7rem; background:#2563EB; color:#fff; border-radius:3px; padding:2px 7px; font-weight:700; letter-spacing:0.3px;">EXT 611</span>`;
+        // Assessment flags — bold text + neutral styling, no rainbow colors
+        if (wk.num===3) flags += `<span style="display:block; margin-top:3px; font-size:0.72rem; color:#374151; font-weight:700;">· Assign 1 due</span>`;
+        if (wk.num===7) flags += `<span style="display:block; margin-top:3px; font-size:0.72rem; color:#374151; font-weight:700;">· Assign 2 set</span>`;
+        if (wk.num===8) flags += `<span style="display:block; margin-top:3px; font-size:0.72rem; color:#2563EB; font-weight:700;">· Midterm Quiz</span>`;
+        if (wk.num===10) flags += `<span style="display:block; margin-top:3px; font-size:0.72rem; color:#374151; font-weight:700;">· Assign 3 due</span>`;
+        if (wk.num===15) flags += `<span style="display:block; margin-top:3px; font-size:0.72rem; color:#374151; font-weight:700;">· Assign 4 due</span>`;
+        if (wk.num===16) flags += `<span style="display:block; margin-top:3px; font-size:0.72rem; color:#2563EB; font-weight:700;">· Unit Quiz</span>`;
+        if (wk.num===19) flags += `<span style="display:block; margin-top:3px; font-size:0.72rem; color:#0F172A; font-weight:800; text-transform:uppercase; letter-spacing:0.3px;">FINAL EXAM</span>`;
+
+        tr.innerHTML = `
+            <td>${wkBadge}</td>
+            <td style="white-space:nowrap; font-size:0.82rem;">${dateRange}</td>
+            <td>${chBadge}<br><span style="font-size:0.75rem; color:var(--text-muted);">${wk.sections}</span></td>
+            <td style="font-size:0.8rem; color:var(--text-muted);">${wk.pages}</td>
+            <td style="font-size:0.8rem;">${flags || '—'}</td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+/* ====================================================================
+   CHAPTER KNOWLEDGE NOTES
+   ==================================================================== */
+const CHAPTER_NOTES = {
+    1: {
+        title: 'Mathematical Modelling',
+        subtitle: 'Sections 1.1–1.2 · Week 1 · pp. 1–4',
+        content: `<div class="skeleton-note">
+            <p><strong>Chapter 1 — Skeleton Note</strong></p>
+            <p style="margin-top:8px;">Full teacher notes for this chapter will be added before Week 1. Key topics: the modelling cycle (problem → model → test → refine), variable types, model assumptions and limitations.</p>
+            <p style="margin-top:8px; font-size:0.78rem;">Content coming — will be populated before semester start.</p>
+        </div>`
+    },
+    2: {
+        title: 'Measures of Location & Spread',
+        subtitle: 'Sections 2.1–2.6 · Weeks 2–3 · pp. 5–28',
+        content: `<div class="skeleton-note">
+            <p><strong>Chapter 2 — Skeleton Note</strong></p>
+            <p style="margin-top:8px;">Full teacher notes for this chapter will be added before Week 2. Key topics: mean (ungrouped, grouped), median, mode, quartiles, IQR, variance, standard deviation, coding.</p>
+            <p style="margin-top:8px; font-size:0.78rem;">Content coming — will be populated before Week 2.</p>
+        </div>`
+    },
+    3: {
+        title: 'Representations of Data',
+        subtitle: 'Sections 3.1–3.6 · Weeks 4–5 · pp. 29–53',
+        content: `<div class="skeleton-note">
+            <p><strong>Chapter 3 — Skeleton Note</strong></p>
+            <p style="margin-top:8px;">Full teacher notes for this chapter will be added before Week 4. Key topics: histograms (frequency density), outliers, box plots, stem & leaf diagrams, skewness (positive/negative/symmetric).</p>
+            <p style="margin-top:8px; font-size:0.78rem;">Content coming — will be populated before Week 4.</p>
+        </div>`
+    },
+    4: {
+        title: 'Probability',
+        subtitle: 'Sections 4.1–4.8 · Weeks 6–8 (Jun 15 – Jul 3) · pp. 54–87 · ~20–25% of final exam',
+        content: buildCh4Notes()
+    },
+    5: {
+        title: 'Correlation & Regression',
+        subtitle: 'Sections 5.1–5.4 · Weeks 9–10 · pp. 95–123',
+        content: `<div class="skeleton-note">
+            <p><strong>Chapter 5 — Skeleton Note</strong></p>
+            <p style="margin-top:8px;">Full teacher notes for this chapter will be added before Week 9. Key topics: scatter diagrams, least-squares regression line (y = a + bx), Sxy/Sxx/Syy, PMCC (r), correlation vs. causation, interpolation vs. extrapolation.</p>
+            <p style="margin-top:8px; font-size:0.78rem;">Content coming — will be populated before Week 9.</p>
+        </div>`
+    },
+    6: {
+        title: 'Discrete Random Variables',
+        subtitle: 'Sections 6.1–6.7 · Weeks 11–13 · pp. 124–150',
+        content: `<div class="skeleton-note">
+            <p><strong>Chapter 6 — Skeleton Note</strong></p>
+            <p style="margin-top:8px;">Full teacher notes for this chapter will be added before Week 11. Key topics: DRV definition, probability distribution table (Σp=1), CDF F(x), E(X), Var(X), E(aX+b) and Var(aX+b), discrete uniform distribution.</p>
+            <p style="margin-top:8px; font-size:0.78rem;">Content coming — will be populated before Week 11.</p>
+        </div>`
+    },
+    7: {
+        title: 'The Normal Distribution',
+        subtitle: 'Sections 7.1–7.5 · Weeks 14–16 · pp. 151–171',
+        content: `<div class="skeleton-note">
+            <p><strong>Chapter 7 — Skeleton Note</strong></p>
+            <p style="margin-top:8px;">Full teacher notes for this chapter will be added before Week 14. Key topics: normal distribution properties, standardisation Z=(X−μ)/σ, Φ tables (P(Z&lt;z)), P(a&lt;X&lt;b) calculations, finding μ and σ from given probabilities.</p>
+            <p style="margin-top:8px; font-size:0.78rem;">Content coming — will be populated before Week 14.</p>
+        </div>`
+    },
+};
+
+function buildCh4Notes() {
+    return `
+    <div class="note-section">
+        <h4>Mathematical Knowledge Summary</h4>
+        <p>Probability at A-Level is built on <strong>set theory</strong>, not just intuition. You must know these seven pillars:</p>
+        <ol style="margin-left:18px; margin-top:8px; font-size:0.875rem; line-height:1.7;">
+            <li style="margin-bottom:8px;"><strong>Foundational definitions:</strong> Sample space (Ω) = complete set of all possible outcomes. Event (A) = subset of Ω. P(A) = |A|/|Ω| only when outcomes are equally likely. Complement (A'): P(A) + P(A') = 1 always.</li>
+            <li style="margin-bottom:8px;"><strong>Boolean operations:</strong> Union (A ∪ B) = "A or B or both" — <strong>P(A ∪ B) = P(A) + P(B) − P(A ∩ B).</strong> The −P(A ∩ B) term prevents double-counting. Intersection (A ∩ B) = "both A and B."</li>
+            <li style="margin-bottom:8px;"><strong>Mutually Exclusive vs. Independence:</strong> M.E. = A ∩ B = ∅, P(A ∩ B) = 0 — about <em>outcome overlap</em>. Independent = P(A ∩ B) = P(A)×P(B) — about <em>probability relationships</em>. These are orthogonal properties. <span class="note-tag">CRITICAL</span> If A and B are M.E. and both have nonzero probability, they are NOT independent.</li>
+            <li style="margin-bottom:8px;"><strong>Conditional Probability:</strong> P(A|B) = P(A ∩ B) / P(B), provided P(B) &gt; 0. This reweights the sample space: given B happened, outcomes outside B have probability zero. Bayes' implicit form: P(A|B) = [P(B|A)×P(A)] / P(B).</li>
+            <li style="margin-bottom:8px;"><strong>Total Probability:</strong> If B₁…Bₙ partition Ω, then P(A) = Σ P(A|Bᵢ)×P(Bᵢ). Break complex probability into cases. Practical in all multi-urn/stage problems.</li>
+            <li style="margin-bottom:8px;"><strong>Tree Diagrams:</strong> Not just pictures — they encode event sequences and conditional probabilities on branches. Final probability = product along path (multiplication rule). With replacement: second-stage probabilities unchanged. Without replacement: probabilities change (conditional on first outcome). Denominator decreases.</li>
+            <li style="margin-bottom:8px;"><strong>Set Notation Mastery:</strong> A ∪ B (union), A ∩ B (intersection), A' (complement), A ⊆ B (subset). Fluent translation between notation and plain language. Use Edexcel's notation consistently: P(A|B), not P(A:B) or P(A/B).</li>
+        </ol>
+    </div>
+
+    <div class="note-section">
+        <h4>Common Misconceptions &amp; Pitfalls <span class="note-tag">8 traps</span></h4>
+        <ol style="margin-left:18px; margin-top:8px; font-size:0.875rem; line-height:1.7;">
+            <li style="margin-bottom:10px;"><strong>"Mutually Exclusive = Independent" [VERY COMMON — 80%+ of cohorts]</strong><br>Students hear "not connected" and think both mean the same. Fix: use coin-flip (independent, not M.E.) vs. hearts/clubs card (M.E., not independent). Ask: "Does knowing it's hearts change the probability it's clubs?" Yes — to zero. Not independent.</li>
+            <li style="margin-bottom:10px;"><strong>Forgetting −P(A ∩ B) in union formula</strong><br>Students write P(A ∪ B) = P(A) + P(B), lose marks every exam. Fix: draw Venn on whiteboard, shade overlap, show it's counted twice. Have formula on a persistent display in the room.</li>
+            <li style="margin-bottom:10px;"><strong>Misreading P(A|B) vs. P(B|A)</strong><br>Students mix up what's given. Fix: always verbalise in words first — "Probability of A given B." In tree diagrams, read left to right: "now that this happened, the next branch is…"</li>
+            <li style="margin-bottom:10px;"><strong>Tree probabilities not conditional on prior branches</strong><br>Students use same probability for all stages. Fix: colour-code by stage. For without-replacement, write denominator explicitly: "We started with 10, drew 1, now 9 remain." Show the number changing.</li>
+            <li style="margin-bottom:10px;"><strong>Venn diagram: shading wrong region</strong><br>Asked for A ∪ B, students shade only A or only A ∩ B. Fix: number the regions (1=A only, 2=B only, 3=both, 4=neither). Train systematic region-listing before shading.</li>
+            <li style="margin-bottom:10px;"><strong>Conditional probability: forgetting to divide by P(B)</strong><br>Students stop at P(A ∩ B). Fix: Venn with frequencies — "P(A ∩ B) = 4/100, P(B) = 20/100. P(A|B) = 4/20. We restrict sample space to B's 20 outcomes."</li>
+            <li style="margin-bottom:10px;"><strong>Tree diagrams without replacement: not adjusting denominator</strong><br>First card is ace (4/52); second ace is still written as 4/52. Fix: "After removing one ace, 51 cards left, 3 aces remain. Denominator changed."</li>
+            <li style="margin-bottom:10px;"><strong>"Are these independent?" — guessing instead of checking</strong><br>Students answer on intuition. Fix: give them the test. Is P(A ∩ B) = P(A)×P(B)? Yes = independent. No = dependent. This is a definition check, not intuition.</li>
+        </ol>
+    </div>
+
+    <div class="note-section">
+        <h4>Prerequisite Concepts</h4>
+        <ul style="margin-left:18px; margin-top:6px; font-size:0.875rem; line-height:1.7;">
+            <li>Fractions and proportions — P(A) is a ratio; students who struggle with fractions will struggle here</li>
+            <li>Basic set theory language — sets, elements, subset notation (from earlier in course or earlier schooling)</li>
+            <li>Counting outcomes — if equally likely, count to find probability; flag if combinatorics is weak in Week 6 prep</li>
+            <li>Decimal/percentage conversion — P(A) = 0.3 = 30%; students mix these up under time pressure</li>
+            <li>Algebra — rearranging P(A|B) = P(A ∩ B)/P(B) to solve for unknowns; solving linear equations</li>
+        </ul>
+    </div>
+
+    <div class="note-section">
+        <h4>Connections to Other Chapters</h4>
+        <ul style="margin-left:18px; margin-top:6px; font-size:0.875rem; line-height:1.7;">
+            <li><strong>Ch. 2–3 (Stats):</strong> Probability applies to real data — "if this sample holds in population, what's P(randomly chosen person scores above median)?"</li>
+            <li><strong>Ch. 6 (DRV):</strong> A DRV is a function from the sample space to real numbers; its distribution is a set of probabilities. Students who nail Ch. 4 find Ch. 6 is just the same rules applied to tables.</li>
+            <li><strong>Ch. 7 (Normal):</strong> P(a &lt; X &lt; b) = Φ(b) − Φ(a) — probability rules applied to the normal curve.</li>
+            <li><strong>Real world:</strong> Insurance actuaries, medical testing (Bayes for diagnosis), weather forecasting, quality control, risk management. Flag these in lessons — especially relevant for 611 (biomedical track).</li>
+        </ul>
+    </div>
+
+    <div class="note-section">
+        <h4>Notation &amp; Language</h4>
+        <table class="note-table">
+            <thead>
+                <tr><th>Concept</th><th>Edexcel Notation</th><th>Alternatives</th><th>Notes</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>Sample space</td><td>Ω (omega)</td><td>S, ξ</td><td>Edexcel uses Ω. Be consistent.</td></tr>
+                <tr><td>Probability of A</td><td>P(A)</td><td>Pr(A), ℙ(A)</td><td>P(A) ∈ [0, 1] always.</td></tr>
+                <tr><td>Complement</td><td>A'</td><td>Aᶜ, ¬A, Ā</td><td>Edexcel uses A'. P(A') = 1 − P(A).</td></tr>
+                <tr><td>Union</td><td>A ∪ B</td><td>A + B (old texts)</td><td>"Or" — inclusive. Use ∪ symbol only.</td></tr>
+                <tr><td>Intersection</td><td>A ∩ B</td><td>AB (some texts)</td><td>"And." Both must occur.</td></tr>
+                <tr><td>Conditional</td><td>P(A|B)</td><td>P(A;B) — old texts</td><td>Read: "probability of A given B." Vertical bar only.</td></tr>
+                <tr><td>Mutually exclusive</td><td>A ∩ B = ∅</td><td>Disjoint</td><td>Same thing. Edexcel says "mutually exclusive events."</td></tr>
+                <tr><td>Independent</td><td>P(A ∩ B) = P(A)P(B)</td><td>Stochastically independent</td><td>The definition is the multiplication rule.</td></tr>
+            </tbody>
+        </table>
+        <p style="font-size:0.82rem; margin-top:10px; color:var(--text-muted);">Language: "Outcome" = single possibility (rolling a 6). "Event" = set of outcomes (rolling even = {2,4,6}). Always distinguish these when introducing the chapter.</p>
+    </div>
+
+    <div class="note-section">
+        <h4>Exam Traps — Past Paper Patterns</h4>
+        <ol style="margin-left:18px; margin-top:8px; font-size:0.875rem; line-height:1.7;">
+            <li style="margin-bottom:10px;"><strong>Multi-stage: conditional probabilities change without replacement.</strong> Urn 1 has 3 red, 2 blue; draw one, move to Urn 2 (4 red, 1 blue). Find P(both red). Trap: students use same probabilities for both stages. After moving a red ball, Urn 2 has 5 red.</li>
+            <li style="margin-bottom:10px;"><strong>"Given" statements misread.</strong> P(A) = 0.3, P(B) = 0.4, P(A ∩ B) = 0.1. "Given B, find P(A)." Students stop at 0.1. Correct: P(A|B) = 0.1/0.4 = 0.25. Watch this in Week 7 practice.</li>
+            <li style="margin-bottom:10px;"><strong>Union formula: −P(A ∩ B) forgotten.</strong> P(A) = 0.5, P(B) = 0.6, P(A ∩ B) = 0.2. Students write P(A ∪ B) = 1.1 (impossible). Should be 0.9. Appears in nearly every cohort's papers.</li>
+            <li style="margin-bottom:10px;"><strong>Venn diagram region miscounting.</strong> "How many outcomes in A ∪ B?" Students forget the overlap. Or "Shade A ∩ B'" — shade wrong region. Use numbered regions drill.</li>
+            <li style="margin-bottom:10px;"><strong>3-stage tree diagrams.</strong> Some exam questions have 3-stage trees (picking 3 without replacement). Students lose track of updating probabilities at each stage. In Week 8, walk through a 3-stage tree very slowly.</li>
+            <li style="margin-bottom:10px;"><strong>"Are A and B independent?" — no verification.</strong> Correct approach: compute P(A ∩ B) and compare to P(A)×P(B). State the comparison explicitly. This is a definition check. Show all working.</li>
+            <li style="margin-bottom:10px;"><strong>Rearranging conditional probability formula.</strong> Given P(A|B) = 0.4, P(B) = 0.5, find P(A ∩ B). Students may invert the formula. Drill: P(A ∩ B) = P(A|B) × P(B) = 0.4 × 0.5 = 0.2.</li>
+        </ol>
+    </div>
+
+    <div class="note-section">
+        <h4>Teaching Strategy by Week</h4>
+        <ul style="margin-left:18px; margin-top:6px; font-size:0.875rem; line-height:1.7;">
+            <li><strong>Week 6 (4.1–4.3 — Vocabulary, Venn, M.E. &amp; Independence):</strong> Foundation week — do not rush. Spend 2 full lessons on Venn diagrams alone. Use coloured paper, whiteboard overlays. Separate M.E. from independence with concrete examples immediately.</li>
+            <li><strong>Week 7 (4.4–4.6 — Set Notation, Conditional Probability):</strong> Set notation is abstract. Use a "Venn ↔ notation" translation sheet. Build conditional probability slowly — always with a concrete context first. Assignment 2 is set this week.</li>
+            <li><strong>Week 8 (4.7–4.8 — Formulae, Tree Diagrams):</strong> Tree diagrams are powerful. Start with 2-stage with replacement (simple), then without replacement (show denominator changing). In Week 8 practice, use a 3-stage tree.</li>
+            <li><strong>614 specific:</strong> Probability is where 614 loses confidence. Prioritise Venn diagrams and tree diagrams. Avoid formal set notation until students are comfortable. Use accessible contexts (ball draws, coin flips, weather).</li>
+            <li><strong>611 specific:</strong> Extension task on Week 6 or Week 8 — probability simulation (false positive/negative rates in medical testing, Bayes in action). Self-contained double-period activity.</li>
+        </ul>
+    </div>`;
+}
+
+function buildChapterNotes() {
+    const tabs = document.getElementById('chapter-tabs');
+    const container = document.getElementById('chapter-notes-container');
+
+    CHAPTERS.forEach((ch, i) => {
+        // Tab button — styling handled by CSS .ch-tab / .ch-tab.active
+        const btn = document.createElement('button');
+        btn.className = `ch-tab${i === 3 ? ' active' : ''}`;
+        btn.textContent = `Ch.${ch.num}`;
+        btn.title = ch.title;
+        btn.onclick = () => switchChapterNote(ch.num);
+        tabs.appendChild(btn);
+
+        // Note pane
+        const pane = document.createElement('div');
+        pane.className = `chapter-note-pane${i === 3 ? ' active' : ''}`;
+        pane.id = `ch-note-${ch.num}`;
+        const note = CHAPTER_NOTES[ch.num];
+        pane.innerHTML = `
+            <div class="note-title">Chapter ${ch.num}: ${note.title}</div>
+            <div class="note-subtitle">${note.subtitle}</div>
+            ${note.content}
+        `;
+        container.appendChild(pane);
+    });
+}
+
+function switchChapterNote(num) {
+    document.querySelectorAll('.chapter-note-pane').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.ch-tab').forEach(b => b.classList.remove('active'));
+    document.getElementById(`ch-note-${num}`).classList.add('active');
+    // find the right button by its title
+    document.querySelectorAll('.ch-tab').forEach(b => {
+        if (b.title === CHAPTERS.find(c=>c.num===num).title) b.classList.add('active');
+    });
+}
+
+/* ====================================================================
+   CLASS INTEL
+   ==================================================================== */
+function buildClassIntel() {
+    const grid = document.getElementById('class-intel-grid');
+    CLASS_INTEL.forEach(cls => {
+        const card = document.createElement('div');
+        card.className = `class-card ${cls.id}`;
+        const flagsHtml = cls.flags.map(f => `
+            <div class="student-flag ${f.type === 'red' ? 'red' : f.type === 'green' ? 'green' : ''}">
+                <span style="font-weight:700; flex-shrink:0;">${f.icon}</span>
+                <span>${f.text}</span>
+            </div>
+        `).join('');
+        card.innerHTML = `
+            <div class="class-card-header">
+                <h3>${cls.name}</h3>
+                <span class="class-track-badge">${cls.track}</span>
+            </div>
+            <div class="class-card-body">
+                <p style="margin-bottom:12px; font-weight:600;">${cls.overview}</p>
+                ${flagsHtml}
+            </div>
+        `;
+        grid.appendChild(card);
+    });
+}
+
+/* ====================================================================
+   PREP CHECKLIST (Week 7 live example)
+   ==================================================================== */
+function buildChecklist() {
+    const body = document.getElementById('checklist-body');
+    const isExtWeek = false; // Week 7 is not an extension week for 611
+
+    body.innerHTML = `
+        <div class="checklist-section">
+            <div class="checklist-section-title">Materials Ready</div>
+            <ul class="checklist">
+                <li><input type="checkbox"> Print section 4.4–4.6 notes for all students (or confirm iPad ebook access)</li>
+                <li><input type="checkbox"> Prepare blank Venn diagram worksheets — A4, for in-class practice (paper preferred for in-class work)</li>
+                <li><input type="checkbox"> Prepare tree diagram templates (leave probabilities blank)</li>
+                <li><input type="checkbox"> Check smart board / classroom PC connection — have whiteboard backup ready</li>
+            </ul>
+        </div>
+        <div class="checklist-section">
+            <div class="checklist-section-title">Lessons Planned</div>
+            <ul class="checklist">
+                <li><input type="checkbox"> <strong>Lesson 1 (Mon):</strong> Set notation intro — translate Venn ↔ notation. Opener: recall union and intersection from Week 6.</li>
+                <li><input type="checkbox"> <strong>Lesson 2 (Tue):</strong> Conditional probability intro. Context first: "It's raining — what's the probability I cancel soccer?" 2 worked Venn examples.</li>
+                <li><input type="checkbox"> <strong>Lesson 3 (Wed):</strong> Conditional probability in Venn diagrams. Given numbers in a Venn, find P(A|B), P(B|A).</li>
+                <li><input type="checkbox"> <strong>Lesson 4 (Thu/Fri):</strong> Catch-up / extra practice / extension for fast finishers.</li>
+                <li><input type="checkbox"> Plan exit-ticket question for each lesson (print or display on smart board)</li>
+            </ul>
+        </div>
+        <div class="checklist-section">
+            <div class="checklist-section-title">Assessment</div>
+            <ul class="checklist">
+                <li><input type="checkbox"> Set Assignment 2 (Probability) — due Week 7 Friday. Check question set is ready.</li>
+                <li><input type="checkbox"> Mark any collected homework from last week</li>
+                <li><input type="checkbox"> Flag perennial errors to address: students forgetting to divide by P(B); misreading P(A|B) vs. P(B|A)</li>
+            </ul>
+        </div>
+        <div class="checklist-section">
+            <div class="checklist-section-title">Track 2 (614) Specific</div>
+            <ul class="checklist">
+                <li><input type="checkbox"> Prepare simplified 614 worksheet: "Venn Diagram to Conditional Probability" — 3 worked examples, stepped</li>
+                <li><input type="checkbox"> Plan slower introduction: 1.5 lessons on Venn, 1.5 on conditional (vs. 1+1 for Track 1)</li>
+                <li><input type="checkbox"> Have colour-shading Venn templates ready for 614</li>
+                <li><input type="checkbox"> Avoid heavy set notation with 614 until they're comfortable with the concepts</li>
+            </ul>
+        </div>
+        <div class="checklist-section">
+            <div class="checklist-section-title">Prior to Week End</div>
+            <ul class="checklist">
+                <li><input type="checkbox"> Skim next week's content (4.7–4.8: Probability Formulae, Tree Diagrams)</li>
+                <li><input type="checkbox"> Note: Week 8 will be fast — formula + tree diagrams — allocate extra practice time</li>
+                <li><input type="checkbox"> Week 8 is an EXTENSION week for 611 — begin planning that task now if not done</li>
+            </ul>
+        </div>
+
+        <div class="extension-block" style="margin-top:16px;">
+            <div class="ext-label">Extension Prep Reminder — 611 (Even Weeks: 2, 4, 6, 8, 10, 12, 14, 16)</div>
+            <p style="font-size:0.82rem; color:#1e3a5f; margin-bottom:8px;">Week 8 is the next extension week. Prepare before end of this week.</p>
+            <ul class="checklist">
+                <li><input type="checkbox"> <strong>EXTENSION PREP (611):</strong> Prepare one off-textbook, self-contained lesson for a double period. Topic should connect to current chapter (Ch. 4 Probability) but go beyond the syllabus.</li>
+                <li><input type="checkbox"> Example idea: Probability simulation — false positive/negative rates in medical testing. Students calculate and simulate Bayes' theorem in a biomedical context.</li>
+                <li><input type="checkbox"> Confirm double-period day in Week 8 timetable for 611</li>
+                <li><input type="checkbox"> Gather materials: dataset or simulation setup, printed handout (paper — better engagement for in-class tasks)</li>
+            </ul>
+        </div>
+
+        <div class="checklist-section" style="margin-top:16px;">
+            <div class="checklist-section-title">Generic Recurring (Every Week)</div>
+            <ul class="checklist">
+                <li><input type="checkbox"> Print/distribute textbook pages for this week's sections (or confirm ebook access)</li>
+                <li><input type="checkbox"> Prepare 3–4 worked examples (write on board or handout)</li>
+                <li><input type="checkbox"> Set aside extension tasks for fast finishers in Track 1</li>
+                <li><input type="checkbox"> Review 614 differentiation note for this week's chapter</li>
+                <li><input type="checkbox"> Mark last week's homework</li>
+            </ul>
+        </div>
+    `;
+}
+
+/* ====================================================================
+   LESSON FRAMEWORK
+   ==================================================================== */
+function buildLessonFramework() {
+    const body = document.getElementById('lesson-body');
+    body.innerHTML = `
+        <p style="font-size:0.875rem; color:var(--text-muted); margin-bottom:20px;">A 40-minute period. Not a detailed lesson plan — a mental scaffold. Adjust timing per class pace. Track 1 moves faster through the opener; 614 needs more guided practice time.</p>
+
+        <div class="progress-label" style="margin-bottom:8px;">Phase Breakdown</div>
+        <div class="lesson-phase">
+            <div class="lp-cell lp-header lp-phase-label">Phase</div>
+            <div class="lp-cell lp-header">Time</div>
+            <div class="lp-cell lp-header">What Happens</div>
+            <div class="lp-cell lp-header">Teacher Role</div>
+        </div>
+
+        ${[
+            ['Opener (Diagnostic)', '3–5 min', 'One simple question targeting prerequisite or prior section. Students answer on paper or mini-whiteboard.', 'Listen; identify gaps on the spot. Reteach briefly if &gt;30% confused.'],
+            ['New Concept (Interactive)', '12–15 min', 'Introduce new concept with concrete example (real context, picture, manipulative). Intuition before notation.', 'Model thinking aloud. Pause to check understanding. Invite students to predict the next step.'],
+            ['Worked Example', '8–10 min', 'Do 2–3 worked examples (increasing complexity) on board or smart board. Ask "What\'s the next step?" to maintain engagement.', 'Write neatly, label steps, verbalise reasoning.'],
+            ['Guided Practice', '10–12 min', 'Students do 2–3 similar problems in pairs or individually. Paper preferred for complex problems. Circulate.', 'Listen for misconceptions. Provide hints, not answers. Note patterns (half the class making same error).'],
+            ['Closer (Formative)', '3–5 min', 'Exit ticket: one question answered individually. Students hand in or teacher scans quickly.', 'Scan for misconceptions to address next lesson. Do not over-correct in the moment.'],
+            ['Homework', '—', 'Set 4–6 textbook exercises or a short worksheet.', 'Explain expectations. For 614, provide worked solution to 1 example problem.'],
+        ].map(([phase, time, what, role]) => `
+            <div class="lesson-phase">
+                <div class="lp-cell"><span class="lp-phase-label">${phase}</span></div>
+                <div class="lp-cell"><span class="lp-time">${time}</span></div>
+                <div class="lp-cell">${what}</div>
+                <div class="lp-cell">${role}</div>
+            </div>
+        `).join('')}
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:16px; margin-top:24px;">
+            <div style="background:#F8FAFC; border-left:3px solid #6B7280; border-radius:0 6px 6px 0; padding:14px 16px; border:1px solid #E2E8F0;">
+                <div style="font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.8px; color:#374151; margin-bottom:8px;">Procedural Lesson</div>
+                <p style="font-size:0.82rem; line-height:1.6; color:#374151;">e.g. "Calculate standard deviation." Opener: recall variance. New: teach formula step-by-step. Worked: two examples (ungrouped then grouped). Guided: drill calculation. Closer: interpret the result.</p>
+            </div>
+            <div style="background:#EFF6FF; border-left:3px solid #2563EB; border-radius:0 6px 6px 0; padding:14px 16px; border:1px solid #BFDBFE;">
+                <div style="font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.8px; color:#1D4ED8; margin-bottom:8px;">Conceptual Lesson</div>
+                <p style="font-size:0.82rem; line-height:1.6; color:#374151;">e.g. "What does independence mean?" Opener: poll "Are these independent?" New: define formally; show contrasting examples. Worked: apply definition. Guided: classify new events. Closer: predict P(A ∩ B) given independence.</p>
+            </div>
+            <div style="background:#F8FAFC; border-left:3px solid #374151; border-radius:0 6px 6px 0; padding:14px 16px; border:1px solid #E2E8F0;">
+                <div style="font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.8px; color:#0F172A; margin-bottom:8px;">Representation Lesson</div>
+                <p style="font-size:0.82rem; line-height:1.6; color:#374151;">e.g. "Draw a histogram using frequency density." Opener: recall frequency vs. frequency density. New: show formula, axes, completed example. Worked: build one on board. Guided: students draw one. Closer: interpret — which class has highest density?</p>
+            </div>
+        </div>
+    `;
+}
+
+/* ====================================================================
+   ASSESSMENT
+   ==================================================================== */
+function buildAssessment() {
+    const body = document.getElementById('assessment-body');
+    ASSESSMENTS.forEach(a => {
+        const item = document.createElement('div');
+        item.className = `assessment-item${a.type === 'quiz' ? ' quiz' : a.type === 'exam' ? ' exam' : ''}`;
+        const badgeClass = a.type === 'homework' ? 'homework' : a.type === 'quiz' ? 'quiz-b' : 'exam-b';
+        const badgeText = a.type === 'homework' ? 'Homework' : a.type === 'quiz' ? 'In-Class Quiz' : 'School Exam';
+        item.innerHTML = `
+            <div class="a-date">${a.date}</div>
+            <div>
+                <div class="a-name">${a.name} <span style="font-size:0.8rem; font-weight:400; color:var(--text-muted);">${a.chapter}</span></div>
+                <div class="a-detail">${a.detail} &middot; Weight: <strong>${a.weight}</strong></div>
+            </div>
+            <div class="a-badge ${badgeClass}">${badgeText}</div>
+        `;
+        body.appendChild(item);
+    });
+}
+
+/* ====================================================================
+   DIFFERENTIATION
+   ==================================================================== */
+function buildDifferentiation() {
+    const body = document.getElementById('diff-body');
+    const principlesHtml = DIFFERENTIATION_614.principles.map(p => `<li>${p}</li>`).join('');
+    const chNotesHtml = DIFFERENTIATION_614.chapters.map(c => `
+        <div class="diff-ch-note">
+            <div class="diff-ch-label">Chapter ${c.num}</div>
+            <div style="font-size:0.82rem; margin-top:2px; line-height:1.5;">${c.note}</div>
+        </div>
+    `).join('');
+
+    body.innerHTML = `
+        <div class="diff-grid">
+            <div class="diff-track">
+                <div class="diff-track-header track1">Track 1 (611, 612, 613) — Science/Maths Oriented</div>
+                <div class="diff-track-body">
+                    <ul>
+                        <li><strong>Profile:</strong> Strong mathematical foundation; comfortable with notation and algebra.</li>
+                        <li><strong>Pacing:</strong> Standard to slightly faster. Compress procedural lessons; spend more time on extensions.</li>
+                        <li><strong>Assessment:</strong> Full textbook exercises. Expect formula derivations where relevant.</li>
+                        <li><strong>Extensions:</strong> Multi-part problems, real research datasets, theoretical questions ("Why is E(X) the long-run average?").</li>
+                        <li><strong>In-lesson:</strong> Ask students to derive the formula, apply it to a novel context, or explain it to a peer.</li>
+                        <li><strong>611 specifically:</strong> Extension task every other week (even weeks) — double-period, off-textbook, biomedically connected.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="diff-track">
+                <div class="diff-track-header track2">Track 2 (614) — Arts/Business Oriented</div>
+                <div class="diff-track-body">
+                    <ul>
+                        <li><strong>Profile:</strong> Diverse. Some strong, many anxious or with gaps. Do not treat as "math lite."</li>
+                        <li><strong>Pacing:</strong> Slower, especially on abstract chapters (4 and 6).</li>
+                        <li><strong>Assessment:</strong> Worksheet-guided problems. Prioritise interpretation over derivation.</li>
+                        <li><strong>Extensions:</strong> Real-world applications (business, social science). Graphing and visualisation.</li>
+                        <li><strong>In-lesson:</strong> Step-by-step worksheets. Calculator use. Build confidence with accessible language.</li>
+                        <li><strong>Red-flag chapters:</strong> 4 (Probability), 6 (DRV). Watch pacing closely.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div style="margin-bottom:16px;">
+            <div class="progress-label" style="margin-bottom:10px;">Core 614 Differentiation Principles</div>
+            <ul style="margin-left:18px; font-size:0.875rem; line-height:1.7;">
+                ${principlesHtml}
+            </ul>
+        </div>
+
+        <div>
+            <div class="progress-label" style="margin-bottom:10px;">Chapter-by-Chapter 614 Notes</div>
+            ${chNotesHtml}
+        </div>
+    `;
+}
+
+/* ====================================================================
+   PACING & HOLIDAYS
+   ==================================================================== */
+function buildPacing() {
+    const body = document.getElementById('pacing-body');
+    const holidayHtml = HOLIDAYS.map(h => `
+        <div class="holiday-item">
+            <span class="h-week">${h.week}</span>
+            <span class="h-name">⚠ ${h.name}</span>
+            <span style="font-size:0.78rem; color:var(--text-muted); white-space:nowrap;">${h.dates}</span>
+            <span class="h-days">${h.days} teaching days</span>
+        </div>
+    `).join('');
+
+    body.innerHTML = `
+        <p style="font-size:0.875rem; color:var(--text-muted); margin-bottom:16px;">
+            M6 schedule is frequently interrupted beyond these listed holidays — special events, assemblies, graduation activities. Budget for 1–2 unexpected interruptions per term and do not schedule critical new content on Fridays without a backup plan.
+        </p>
+        <div class="progress-label" style="margin-bottom:10px;">Public Holidays Affecting Semester 1</div>
+        <div class="holiday-list" style="margin-bottom:20px;">
+            ${holidayHtml}
+        </div>
+        <div style="background:#FEF3C7; border:1px solid #FDE68A; border-left:4px solid #B45309; border-radius:0 6px 6px 0; padding:14px 16px;">
+            <div style="font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:0.8px; color:#92400E; margin-bottom:6px;">Pacing Risk Indicator</div>
+            <p style="font-size:0.85rem; color:#78350F; line-height:1.6;">If you find yourself behind by more than 3 sections at the end of any week, act immediately: compress the next week's practice component, defer optional extension problems, and flag to admin if assessment dates need shifting. Chapters 4 and 6 are the most likely bottlenecks — especially for 614.</p>
+        </div>
+    `;
+}
+
+/* ====================================================================
+   CLASSROOM SETUP
+   ==================================================================== */
+function buildSetup() {
+    const body = document.getElementById('setup-body');
+    body.innerHTML = `
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:24px; margin-bottom:24px;">
+            <div>
+                <div class="progress-label" style="margin-bottom:10px;">Room Technology</div>
+                <table class="note-table">
+                    <thead><tr><th>Item</th><th>Details</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Smart Board</strong></td><td>~2m × 1m. Connected to classroom PC. Primary projection surface. No separate projector.</td></tr>
+                        <tr><td><strong>Physical Whiteboards</strong></td><td>Available with markers. Use for live worked examples, Venn diagrams, student responses.</td></tr>
+                        <tr><td><strong>Student Devices</strong></td><td>All students have iPads. Ebook access confirmed.</td></tr>
+                        <tr><td><strong>Teacher Device</strong></td><td>Classroom PC (drives smart board).</td></tr>
+                        <tr><td><strong>Projector</strong></td><td>None — smart board IS the display. Do not rely on separate projection.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div>
+                <div class="progress-label" style="margin-bottom:10px;">Paper vs. Digital Policy</div>
+                <div style="background:#F8FAFC; border-left:3px solid #6B7280; border-radius:0 6px 6px 0; padding:14px 16px; margin-bottom:12px; border:1px solid #E2E8F0;">
+                    <div style="font-size:0.78rem; font-weight:700; color:#374151; margin-bottom:6px;">EIP REALITY: Paper works better for in-class practice</div>
+                    <p style="font-size:0.82rem; line-height:1.6; color:#374151;">Department coordinator has nominally declared a paperless approach. In practice, EIP teachers find paper tasks produce measurably better outcomes — better focus, less distraction, higher completion rates on complex problems.</p>
+                </div>
+                <div style="background:#EFF6FF; border-left:3px solid #2563EB; border-radius:0 6px 6px 0; padding:14px 16px; border:1px solid #BFDBFE;">
+                    <div style="font-size:0.78rem; font-weight:700; color:#1D4ED8; margin-bottom:6px;">Recommended approach: Plan for both</div>
+                    <ul style="font-size:0.82rem; line-height:1.6; margin-left:14px; color:#374151;">
+                        <li><strong>Digital:</strong> Resources, ebook reference, submission</li>
+                        <li><strong>Paper:</strong> In-class practice, Venn/tree templates, exit tickets, timed problems</li>
+                        <li>Keep supply of: blank Venn diagrams, tree diagram templates, distribution tables</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div style="background:#FEF3C7; border:1px solid #FDE68A; border-left:4px solid #B45309; border-radius:0 6px 6px 0; padding:12px 16px;">
+            <p style="font-size:0.82rem; color:#92400E;"><strong>Smart board backup:</strong> Always have the physical whiteboard ready as a fallback. If the classroom PC or smart board connection drops, you need to be able to continue teaching immediately without disruption.</p>
+        </div>
+    `;
+}
+
+/* ====================================================================
+   ACCORDION TOGGLE
+   ==================================================================== */
+function toggleAccordion(id) {
+    const el = document.getElementById(id);
+    el.classList.toggle('open');
+}
+
+/* ====================================================================
+   BOOT
+   ==================================================================== */
+initHeader();
+buildProgressBar();
+buildCalendar();
+buildChapterNotes();
+buildClassIntel();
+buildChecklist();
+buildLessonFramework();
+buildAssessment();
+buildDifferentiation();
+buildPacing();
+buildSetup();
+
+// Auto-open Class Intel on load (most new content)
+toggleAccordion('acc-class-intel');
+</script>
+</body>
+</html>
